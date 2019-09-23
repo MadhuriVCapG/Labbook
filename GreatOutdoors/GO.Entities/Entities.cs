@@ -78,7 +78,7 @@ namespace GO.Entities
         public int RetailerID { get => _retailerID; set => _retailerID = value; }
         public string RetailerContactNumber { get => _retailerContactNumber; set => _retailerContactNumber = value; }
 
-        public Retailer()
+        public RetailerUser()
         {
             RetailerID = 0;
             Name = string.Empty;

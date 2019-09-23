@@ -1,0 +1,16 @@
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\bin\Debug\GreatOutdoors.PresentationLayer.exe.config
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\bin\Debug\GreatOutdoors.PresentationLayer.exe
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\bin\Debug\GreatOutdoors.PresentationLayer.pdb
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\bin\Debug\GO.BL.dll
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\bin\Debug\GO.DAL.dll
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\bin\Debug\GO.Entities.dll
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\bin\Debug\GO.Exceptions.dll
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\bin\Debug\GO.BL.pdb
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\bin\Debug\GO.DAL.pdb
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\bin\Debug\GO.Entities.pdb
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\bin\Debug\GO.Exceptions.pdb
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\obj\Debug\GO.PresentationLayer.csprojAssemblyReference.cache
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\obj\Debug\GO.PresentationLayer.csproj.CoreCompileInputs.cache
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\obj\Debug\GO.PresentationLayer.csproj.CopyComplete
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\obj\Debug\GreatOutdoors.PresentationLayer.exe
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GreatOutdoors.PresentationLayer\obj\Debug\GreatOutdoors.PresentationLayer.pdb

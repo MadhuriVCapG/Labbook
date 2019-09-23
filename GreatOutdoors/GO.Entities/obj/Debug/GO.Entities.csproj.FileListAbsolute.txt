@@ -1,0 +1,6 @@
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.Entities\bin\Debug\GO.Entities.dll
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.Entities\bin\Debug\GO.Entities.pdb
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.Entities\obj\Debug\GO.Entities.csprojAssemblyReference.cache
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.Entities\obj\Debug\GO.Entities.csproj.CoreCompileInputs.cache
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.Entities\obj\Debug\GO.Entities.dll
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.Entities\obj\Debug\GO.Entities.pdb

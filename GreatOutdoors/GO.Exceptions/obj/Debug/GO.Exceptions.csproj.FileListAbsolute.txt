@@ -1,0 +1,6 @@
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.Exceptions\bin\Debug\GO.Exceptions.dll
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.Exceptions\bin\Debug\GO.Exceptions.pdb
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.Exceptions\obj\Debug\GO.Exceptions.csprojAssemblyReference.cache
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.Exceptions\obj\Debug\GO.Exceptions.csproj.CoreCompileInputs.cache
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.Exceptions\obj\Debug\GO.Exceptions.dll
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.Exceptions\obj\Debug\GO.Exceptions.pdb

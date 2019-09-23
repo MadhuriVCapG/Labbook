@@ -17,9 +17,26 @@ namespace GreatOutdoors.PresentationLayer
 
             Console.WriteLine("Welcome to Great Outdoors..");
 
-            Console.WriteLine("Enter order details:");
+            
 
-            Order newOrder = new Order();
+            SalesUser s1 = new SalesUser();
+            s1.Name = "ABC";
+            s1.UserName = "abc123";
+            s1.Email = "lihfl@dk.com";
+            s1.SalesManID = 12341;
+
+            if(SalesBL.AddSalesUserBL(s1))
+            {
+                Console.WriteLine(s1.Name);
+                Console.WriteLine(s1.UserName);
+                Console.WriteLine(s1.Email);
+                Console.WriteLine(s1.SalesManID);
+            }
+
+            else
+                Console.WriteLine("Error in adding salesman");
+
+
 
            
 

@@ -1004,6 +1004,22 @@ namespace GO.DAL
     {
         public static List<SalesUser> salesmen = new List<SalesUser>();
 
+
+        public static bool AddSalesUserDAL(SalesUser salesMan)
+        {
+            bool salesManAdded = false;
+            try
+            {
+                salesmen.Add(salesMan);
+                salesManAdded = true;
+            }
+            catch (GOException ex)
+            {
+                throw new GOException(ex.Message);
+            }
+            return salesManAdded;
+        }
+
         public bool AddSalesDAL(int saleOrderID,int salesManID)
         {
             bool saleAdded = false;

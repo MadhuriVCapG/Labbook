@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Data;
 using System.Data.Common;
 using GO.Entities;
@@ -1337,11 +1337,41 @@ namespace GO.BL
                 validSalesMan = false;
                 sb.Append(Environment.NewLine + "Required 10 Digit Contact Number");
             }
+
+            Regex regex = new Regex("^[a-zA-Z ]*$");
+            if(regex.IsMatch(salesman.Name))
+            {
+                validSalesMan = false;
+                sb.Append(Environment.NewLine + "Name should contain alphabets only");
+            }
+
+            Regex regex1 = new Regex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+            if (regex1.IsMatch(salesman.Email))
+            {
+                validSalesMan = false;
+                sb.Append(Environment.NewLine + "Invalid email address");
+            }
+
             if (validSalesMan == false)
                 throw new GOException(sb.ToString());
             return validSalesMan;
         }
 
+
+        public static bool AddSalesUserBL(SalesUser salesMan)
+        {
+            bool salesManAdded = false;
+            try
+            {
+                if (SalesDAL.AddSalesUserDAL(salesMan))
+                    salesManAdded = true;
+            }
+            catch (GOException ex)
+            {
+                throw new GOException(ex.Message);
+            }
+            return salesManAdded;
+        }
         public static bool AddSalesOrderBL(Order newOrder, int salesManID)
         {
             bool orderUploaded = false;

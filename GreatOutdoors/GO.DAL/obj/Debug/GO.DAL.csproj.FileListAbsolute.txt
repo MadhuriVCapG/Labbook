@@ -1,0 +1,11 @@
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.DAL\bin\Debug\GO.DAL.dll
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.DAL\bin\Debug\GO.DAL.pdb
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.DAL\bin\Debug\GO.Entities.dll
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.DAL\bin\Debug\GO.Exceptions.dll
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.DAL\bin\Debug\GO.Entities.pdb
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.DAL\bin\Debug\GO.Exceptions.pdb
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.DAL\obj\Debug\GO.DAL.csprojAssemblyReference.cache
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.DAL\obj\Debug\GO.DAL.csproj.CoreCompileInputs.cache
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.DAL\obj\Debug\GO.DAL.csproj.CopyComplete
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.DAL\obj\Debug\GO.DAL.dll
+C:\Users\HP\Documents\GitHub\Labbook\GreatOutdoors\GO.DAL\obj\Debug\GO.DAL.pdb
