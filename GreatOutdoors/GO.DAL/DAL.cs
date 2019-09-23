@@ -152,9 +152,9 @@ namespace GO.DAL
     }
     public class RetailerDAL
     {
-        public static List<Retailer> retailerList = new List<Retailer>();
+        public static List<RetailerUser> retailerList = new List<RetailerUser>();
 
-        public bool AddRetailerDAL(Retailer newRetailer)
+        public bool AddRetailerDAL(RetailerUser newRetailer)
         {
             bool retailerAdded = false;
             try
@@ -170,17 +170,17 @@ namespace GO.DAL
 
         }
 
-        public List<Retailer> GetAllRetailersDAL()
+        public List<RetailerUser> GetAllRetailersDAL()
         {
             return retailerList;
         }
 
-        public Retailer SearchRetailerDAL(int searchRetailerID)
+        public RetailerUser SearchRetailerDAL(int searchRetailerID)
         {
-            Retailer searchRetailer = null;
+            RetailerUser searchRetailer = null;
             try
             {
-                foreach (Retailer item in retailerList)
+                foreach (RetailerUser item in retailerList)
                 {
                     if (item.RetailerID == searchRetailerID)
                     {
@@ -195,14 +195,14 @@ namespace GO.DAL
             return searchRetailer;
         }
 
-        public List<Retailer> GetRetailerByNameDAL(string retailerName)
+        public List<RetailerUser> GetRetailerByNameDAL(string retailerName)
         {
-            List<Retailer> searchRetailer = new List<Retailer>();
+            List<RetailerUser> searchRetailer = new List<RetailerUser>();
             try
             {
-                foreach (Retailer item in retailerList)
+                foreach (RetailerUser item in retailerList)
                 {
-                    if (item.RetailerName == retailerName)
+                    if (item.Name == retailerName)
                     {
                         searchRetailer.Add(item);
                     }
@@ -216,7 +216,7 @@ namespace GO.DAL
         }
 
 
-        public bool UpdateRetailerDAL(Retailer updateRetailer)
+        public bool UpdateRetailerDAL(RetailerUser updateRetailer)
         {
             bool retailerUpdated = false;
             try
@@ -225,7 +225,7 @@ namespace GO.DAL
                 {
                     if (retailerList[i].RetailerID == updateRetailer.RetailerID)
                     {
-                        updateRetailer.RetailerName = retailerList[i].RetailerName;
+                        updateRetailer.Name = retailerList[i].Name;
                         updateRetailer.RetailerContactNumber = retailerList[i].RetailerContactNumber;
                         retailerUpdated = true;
                     }
@@ -243,8 +243,8 @@ namespace GO.DAL
             bool retailerDeleted = false;
             try
             {
-                Retailer deleteRetailer = null;
-                foreach (Retailer item in retailerList)
+                RetailerUser deleteRetailer = null;
+                foreach (RetailerUser item in retailerList)
                 {
                     if (item.RetailerID == deleteRetailerID)
                     {
@@ -282,7 +282,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new GreatOutdoorsException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return categoryAdded;
 
@@ -309,7 +309,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new GreatOutdoorsException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchCategory;
         }
@@ -329,7 +329,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new GreatOutdoorsException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchCategory;
         }
@@ -351,7 +351,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new GreatOutdoorsException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return categoryUpdated;
 
@@ -378,7 +378,7 @@ namespace GO.DAL
             }
             catch (DbException ex)
             {
-                throw new GreatOutdoorsException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return categoryDeleted;
 
@@ -446,7 +446,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new OrderException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchOrder;
         }
@@ -466,7 +466,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new OrderException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchOrder;
         }
@@ -486,7 +486,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new OrderException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchOrder;
         }
@@ -506,7 +506,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new OrderException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchOrder;
         }
@@ -526,7 +526,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new OrderException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchOrder;
         }
@@ -546,7 +546,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new OrderException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchOrder;
         }
@@ -566,7 +566,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new OrderException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchOrder;
         }
@@ -589,7 +589,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new OrderException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return OrderUpdated;
 
@@ -613,7 +613,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new GreatOutdoorsInventoryException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return productAdded;
 
@@ -639,7 +639,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new GreatOutdoorsInventoryException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchProduct;
         }
@@ -661,7 +661,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new GreatOutdoorsInventoryException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return productUpdated;
 
@@ -689,7 +689,7 @@ namespace GO.DAL
             }
             catch (DbException ex)
             {
-                throw new GreatOutdoorsInventoryException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return productDeleted;
 
@@ -711,7 +711,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new ReturnExceptions(ex.Message);
+                throw new GOException(ex.Message);
             }
             return returnAdded;
 
@@ -737,7 +737,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new ReturnExceptions(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchReturn;
         }
@@ -764,7 +764,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new ReturnExceptions(ex.Message);
+                throw new GOException(ex.Message);
             }
             return returnUpdated;
 
@@ -792,7 +792,7 @@ namespace GO.DAL
             }
             catch (DbException ex)
             {
-                throw new ReturnExceptions(ex.Message);
+                throw new GOException(ex.Message);
             }
             return returnDeleted;
 
@@ -815,7 +815,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new SpecificationExceptions(ex.Message);
+                throw new GOException(ex.Message);
             }
             return specificationAdded;
 
@@ -841,7 +841,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new SpecificationExceptions(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchSpecification;
         }
@@ -866,7 +866,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new SpecificationExceptions(ex.Message);
+                throw new GOException(ex.Message);
             }
             return specificationUpdated;
 
@@ -894,7 +894,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new SpecificationExceptions(ex.Message);
+                throw new GOException(ex.Message);
             }
             return specificationDeleted;
 
@@ -916,7 +916,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new Discount_Exception(ex.Message);
+                throw new GOException(ex.Message);
             }
             return discountAdded;
 
@@ -942,7 +942,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new Discount_Exception(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchDiscount;
         }
@@ -964,7 +964,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new Discount_Exception(ex.Message);
+                throw new GOException(ex.Message);
             }
             return DiscountUpdated;
 
@@ -992,7 +992,7 @@ namespace GO.DAL
             }
             catch (Exception ex)
             {
-                throw new Discount_Exception(ex.Message);
+                throw new GOException(ex.Message);
             }
             return discountDeleted;
 
@@ -1002,14 +1002,14 @@ namespace GO.DAL
 
     public class SalesDAL
     {
-        public static List<Sales> salesmen = new List<Sales>();
+        public static List<SalesUser> salesmen = new List<SalesUser>();
 
         public bool AddSalesDAL(int saleOrderID,int salesManID)
         {
             bool saleAdded = false;
             try
             {
-                foreach(Sales salesman in salesmen)
+                foreach(SalesUser salesman in salesmen)
                 {
                     if (salesman.SalesManID == salesManID)
                         salesman.SalesIDs.Add(saleOrderID);
@@ -1030,7 +1030,7 @@ namespace GO.DAL
 
             try
             {
-                foreach (Sales salesman in salesmen)
+                foreach (SalesUser salesman in salesmen)
                 {
                     if (salesman.SalesManID == salesManID)
                         saleslist = salesman.SalesIDs;
@@ -1050,7 +1050,7 @@ namespace GO.DAL
             int searchSales = 0;
             try
             {
-                foreach(Sales salesman in salesmen)
+                foreach(SalesUser salesman in salesmen)
                 {
                     if(salesman.SalesManID == salesManID)
                     {
@@ -1073,12 +1073,12 @@ namespace GO.DAL
             return searchSales;
         }
 
-        public bool UpdateSalesManDetailsDAL(Sales updateSalesMan)
+        public bool UpdateSalesManDetailsDAL(SalesUser updateSalesMan)
         {
             bool salesManUpdated = false;
             try
             {
-                foreach(Sales salesman in salesmen)
+                foreach(SalesUser salesman in salesmen)
                 {
                     if(salesman.SalesManID == updateSalesMan.SalesManID)
                     {
@@ -1090,7 +1090,7 @@ namespace GO.DAL
                 }
                 
             }
-            catch (SystemException ex)
+            catch (GOException ex)
             {
                 throw new GOException(ex.Message);
             }
@@ -1115,7 +1115,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new AddressException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return addressAdded;
 
@@ -1141,7 +1141,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new AddressException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return searchAddress;
         }
@@ -1167,7 +1167,7 @@ namespace GO.DAL
             }
             catch (SystemException ex)
             {
-                throw new AddressException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return AddressUpdated;
 
@@ -1195,7 +1195,7 @@ namespace GO.DAL
             }
             catch (Exception ex)
             {
-                throw new AddressException(ex.Message);
+                throw new GOException(ex.Message);
             }
             return addressDeleted;
 

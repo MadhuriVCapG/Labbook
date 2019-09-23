@@ -218,7 +218,7 @@ namespace GO.BL
 
     public class RetailerBL
     {
-        private static bool ValidateRetailer(Retailer retailer)
+        private static bool ValidateRetailer(RetailerUser retailer)
         {
             StringBuilder sb = new StringBuilder();
             bool validRetailer = true;
@@ -261,7 +261,7 @@ namespace GO.BL
                 throw new GOException(sb.ToString());
             return validRetailer;
         }
-        public static bool AddRetailerBL(Retailer newRetailer)
+        public static bool AddRetailerBL(RetailerUser newRetailer)
         {
             bool retailerAdded = false;
             try
@@ -278,9 +278,9 @@ namespace GO.BL
             }
             return retailerAdded;
         }
-        public static List<Retailer> GetAllRetailersBL()
+        public static List<RetailerUser> GetAllRetailersBL()
         {
-            List<Retailer> retailerList = null;
+            List<RetailerUser> retailerList = null;
             try
             {
                 RetailerDAL retailerDAL = new RetailerDAL();
@@ -297,9 +297,9 @@ namespace GO.BL
             return retailerList;
         }
 
-        public static Retailer SearchRetailerBL(int searchRetailerID)
+        public static RetailerUser SearchRetailerBL(int searchRetailerID)
         {
-            Retailer searchRetailer = null;
+            RetailerUser searchRetailer = null;
             try
             {
                 RetailerDAL retailerDAL = new RetailerDAL();
@@ -314,7 +314,7 @@ namespace GO.BL
 
 
 
-        public static bool UpdateRetailerBL(Retailer updateRetailer)
+        public static bool UpdateRetailerBL(RetailerUser updateRetailer)
         {
             bool retailerUpdated = false;
             try
@@ -1065,7 +1065,7 @@ namespace GO.BL
 
 
             if (validSpecification == false)
-                throw new SpecificationExceptions(sb.ToString());
+                throw new GOException(sb.ToString());
             return validSpecification;
         }
 
@@ -1080,7 +1080,7 @@ namespace GO.BL
                     specificationAdded = specificationDAL.AddSpecificationDAL(newSpecification);
                 }
             }
-            catch (SpecificationExceptions)
+            catch (GOException)
             {
                 throw;
             }
@@ -1100,7 +1100,7 @@ namespace GO.BL
                 Specification_DAL specificationDAL = new Specification_DAL();
                 specificationList = specificationDAL.GetAllSpecificationsDAL();
             }
-            catch (SpecificationExceptions ex)
+            catch (GOException ex)
             {
                 throw ex;
             }
@@ -1119,11 +1119,7 @@ namespace GO.BL
                 Specification_DAL specificationDAL = new Specification_DAL();
                 searchSpecification = specificationDAL.SearchSpecificationDAL(searchSpecificationID);
             }
-            catch (SpecificationExceptions ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
+            catch (GOException ex)
             {
                 throw ex;
             }
@@ -1142,14 +1138,11 @@ namespace GO.BL
                     specificationUpdated = specificationDAL.UpdateSpecificationDAL(updateSpecification);
                 }
             }
-            catch (SpecificationExceptions)
+            catch (GOException)
             {
                 throw;
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            
 
             return specificationUpdated;
         }
@@ -1166,16 +1159,12 @@ namespace GO.BL
                 }
                 else
                 {
-                    throw new SpecificationExceptions("Invalid Specification ID");
+                    throw new GOException("Invalid Specification ID");
                 }
             }
-            catch (SpecificationExceptions)
+            catch (GOException)
             {
                 throw;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
 
             return specificationDeleted;
@@ -1213,7 +1202,7 @@ namespace GO.BL
                 sb.Append(Environment.NewLine + "Retailer Discount Required");
             }
             if (validDiscount == false)
-                throw new Discount_Exception(sb.ToString());
+                throw new GOException(sb.ToString());
             return validDiscount;
         }
 
@@ -1228,7 +1217,7 @@ namespace GO.BL
                     DiscountAdded = discountDAL.AddDiscountDAL(newDiscount);
                 }
             }
-            catch (Discount_Exception)
+            catch (GOException)
             {
                 throw;
             }
@@ -1248,7 +1237,7 @@ namespace GO.BL
                 Discount_DAL discountDAL = new Discount_DAL();
                 discountList = discountDAL.GetAllDiscountDAL();
             }
-            catch (Discount_Exception ex)
+            catch (GOException ex)
             {
                 throw ex;
             }
@@ -1267,7 +1256,7 @@ namespace GO.BL
                 Discount_DAL discountDAL = new Discount_DAL();
                 searchDiscount = discountDAL.SearchDiscountDAL(searchRetailerID, searchOrderID);
             }
-            catch (Discount_Exception ex)
+            catch (GOException ex)
             {
                 throw ex;
             }
@@ -1290,7 +1279,7 @@ namespace GO.BL
                     discountUpdated = discountDAL.UpdatedDiscountDAL(updateDiscount);
                 }
             }
-            catch (Discount_Exception)
+            catch (GOException)
             {
                 throw;
             }
@@ -1314,10 +1303,10 @@ namespace GO.BL
                 }
                 else
                 {
-                    throw new Discount_Exception("Invalid Order ID and Retailer ID");
+                    throw new GOException("Invalid Order ID and Retailer ID");
                 }
             }
-            catch (Discount_Exception)
+            catch (GOException)
             {
                 throw;
             }
@@ -1332,7 +1321,7 @@ namespace GO.BL
 
     public class SalesBL
     {
-        private static bool ValidateSalesMan(Sales salesman)
+        private static bool ValidateSalesMan(SalesUser salesman)
         {
             StringBuilder sb = new StringBuilder();
             bool validSalesMan = true;
@@ -1349,18 +1338,21 @@ namespace GO.BL
                 sb.Append(Environment.NewLine + "Required 10 Digit Contact Number");
             }
             if (validSalesMan == false)
-                throw new GOException(sb.ToString()); // ??
+                throw new GOException(sb.ToString());
             return validSalesMan;
         }
 
-        public static int AddSalesOrderBL(Order newOrder)
+        public static bool AddSalesOrderBL(Order newOrder, int salesManID)
         {
-            int salesOrderID = 0;
+            bool orderUploaded = false;
             try
             {
                 if (OrderBL.AddOrderBL(newOrder))
                 {
-                    salesOrderID = newOrder.OrderID;
+                    if (AddSalesBL(newOrder.OrderID, salesManID))
+                        Console.WriteLine("Order uploaded succesfully!");
+                    orderUploaded = true;
+
                 }
             }
            
@@ -1369,7 +1361,7 @@ namespace GO.BL
                 throw ex;
             }
 
-            return salesOrderID;
+            return orderUploaded;
         }
         public static bool AddSalesBL(int saleOrderID,int salesManID)
         {
@@ -1396,7 +1388,7 @@ namespace GO.BL
             List<Order> salesList = null;
             try
             {
-                foreach (Sales salesman in SalesDAL.salesmen)
+                foreach (SalesUser salesman in SalesDAL.salesmen)
                 {
                     foreach(int item in salesman.SalesIDs)
                         salesList.Add(OrderBL.SearchOrderBL(item));
@@ -1415,7 +1407,7 @@ namespace GO.BL
             Order searchOrder = null;
             try
             {
-                foreach(Sales salesman in SalesDAL.salesmen)
+                foreach(SalesUser salesman in SalesDAL.salesmen)
                 {
                     foreach (int item in salesman.SalesIDs)
                         searchOrder = OrderBL.SearchOrderBL(item);
@@ -1432,12 +1424,12 @@ namespace GO.BL
 
         }
 
-        public static bool UpdateSalesManBL(Sales updateSalesMan)
+        public static bool UpdateSalesManBL(SalesUser updateSalesMan)
         {
             bool salesManUpdated = false;
             try
             {
-                foreach(Sales salesman in SalesDAL.salesmen)
+                foreach(SalesUser salesman in SalesDAL.salesmen)
                 {
                     if(salesman.SalesManID == updateSalesMan.SalesManID)
                     {
@@ -1517,7 +1509,7 @@ namespace GO.BL
             }
 
             
-            catch (Exception ex)
+            catch (GOException ex)
             {
                 throw ex;
             }

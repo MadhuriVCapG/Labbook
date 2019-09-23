@@ -20,7 +20,7 @@ namespace GO.Entities
         
     }
 
-    public class Admin : User
+    public class AdminUser : User
     {
         private int _adminId;
 
@@ -70,7 +70,7 @@ namespace GO.Entities
     
     
     // Retailer classs 
-    public class Retailer:User
+    public class RetailerUser:User
     {
         private int _retailerID;
         private string _retailerContactNumber;
@@ -232,7 +232,7 @@ namespace GO.Entities
         public double CategoryDiscount { get => _categoryDiscount; set => _categoryDiscount = value; }
     }
 
-    public class Sales:User
+    public class SalesUser:User
     {
         private int salesManID;
 
@@ -251,7 +251,7 @@ namespace GO.Entities
         public double SalesManBonus { get => salesManBonus; set => salesManBonus = value; }
         public List<int> SalesIDs { get => salesIDs; set => salesIDs = value; }
 
-        public Sales()
+        public SalesUser()
         {
             SalesManID = 0;
             SalesManMobile = string.Empty;
