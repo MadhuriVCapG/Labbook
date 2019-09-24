@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29306.81
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GO-1", "GO-1.csproj", "{3094A442-3697-4EA8-AE0D-65C29C34A6E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreatOutdoors.Helpers", "UserType\GreatOutdoors.Helpers.csproj", "{50AB9C85-C118-4B91-98B5-DD943D7EED6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreatOutdoors.Entities", "GreatOutdoors.Entities\GreatOutdoors.Entities.csproj", "{4257FE8D-11A3-4DB0-97A8-3E7EAB75C314}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreatOutdoors.Contracts", "SystemUserDALBase\GreatOutdoors.Contracts.csproj", "{BF806635-8613-4FD2-AA93-23AF1EE45F01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreatOutdoors.DataAccessLayer", "GreatOutdoors.DataAccessLayer\GreatOutdoors.DataAccessLayer.csproj", "{4D794EAB-32C7-4BDE-B906-7CF14810CDEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GreatOutdoors.BusinessLayer", "GreatOutdoors.BusinessLayer\GreatOutdoors.BusinessLayer.csproj", "{32F803AF-D63E-4D3D-9E93-ED279F2DC755}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3094A442-3697-4EA8-AE0D-65C29C34A6E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3094A442-3697-4EA8-AE0D-65C29C34A6E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3094A442-3697-4EA8-AE0D-65C29C34A6E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3094A442-3697-4EA8-AE0D-65C29C34A6E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50AB9C85-C118-4B91-98B5-DD943D7EED6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50AB9C85-C118-4B91-98B5-DD943D7EED6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50AB9C85-C118-4B91-98B5-DD943D7EED6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50AB9C85-C118-4B91-98B5-DD943D7EED6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4257FE8D-11A3-4DB0-97A8-3E7EAB75C314}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4257FE8D-11A3-4DB0-97A8-3E7EAB75C314}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4257FE8D-11A3-4DB0-97A8-3E7EAB75C314}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4257FE8D-11A3-4DB0-97A8-3E7EAB75C314}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF806635-8613-4FD2-AA93-23AF1EE45F01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF806635-8613-4FD2-AA93-23AF1EE45F01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF806635-8613-4FD2-AA93-23AF1EE45F01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF806635-8613-4FD2-AA93-23AF1EE45F01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D794EAB-32C7-4BDE-B906-7CF14810CDEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D794EAB-32C7-4BDE-B906-7CF14810CDEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D794EAB-32C7-4BDE-B906-7CF14810CDEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D794EAB-32C7-4BDE-B906-7CF14810CDEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32F803AF-D63E-4D3D-9E93-ED279F2DC755}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32F803AF-D63E-4D3D-9E93-ED279F2DC755}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32F803AF-D63E-4D3D-9E93-ED279F2DC755}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32F803AF-D63E-4D3D-9E93-ED279F2DC755}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4BA22D94-737A-44D5-A7F0-C8F1E9CF6093}
+	EndGlobalSection
+EndGlobal
