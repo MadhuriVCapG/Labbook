@@ -1,0 +1,176 @@
+use [13th Aug CLoud PT Immersive]
+
+/* Stored procedures to Add, Update, Retrieve and Delete Products from the Products table.
+
+Developer name: Madhuri Vemulapaty
+Use case : Product
+Creation date : 30/09/2019
+Last modified : 01/10/2019
+
+ */
+
+
+/* Procedure to add product into database
+
+Developer name: Madhuri Vemulapaty
+Use case : Product
+Creation date : 30/09/2019
+Last modified : 01/10/2019
+
+ */
+create procedure 
+TeamA.AddProduct(@prodid uniqueidentifier,@prodname varchar(50),@category varchar(30),@stock int,@size varchar(4),
+@colour varchar(20),@techspecs varchar(1000),@cprice money,@sprice money,@discount decimal)
+as
+begin
+begin try
+	-- Checks if Product cost price is 0 or not, throws error if blank
+	if @cprice = 0
+			throw 50001,'Invalid cost price',1
+
+	-- Checks if Product selling price is 0 or not, throws error if blank
+	else if @sprice = 0
+			throw 50001,'Invalid selling price',1
+
+	-- Inserts product details into Products table
+	insert into TeamA.Products(ProductID,[Name],Category,Stock,Size,Colour,TechnicalSpecifications,
+	CostPrice,SellingPrice,DiscountPercentage) 
+	values(@prodid,@prodname,@category,@stock,@size,@colour,@techspecs,@cprice,
+	@sprice,@discount)
+
+end try
+
+begin catch 
+	throw		
+end catch
+end
+
+/* Procedure to get all the products with details
+
+Developer name: Madhuri Vemulapaty
+Use case : Product
+Creation date : 30/09/2019
+Last modified : 01/10/2019
+ */
+ 
+create procedure TeamA.GetAllProducts as
+begin
+	-- Returns products table from Products
+	select ProductID,[Name],Category,Stock,Size,Colour,TechnicalSpecifications,
+	CostPrice,SellingPrice,DiscountPercentage from TeamA.Products
+end
+
+exec TeamA.GetAllProducts
+/* Procedure to get product by ProductID
+
+Developer name: Madhuri Vemulapaty
+Use case : Product
+Creation date : 30/09/2019
+Last modified : 01/10/2019
+
+ */
+create procedure TeamA.GetProductByProductID(@prodid uniqueidentifier) as
+begin
+ select ProductID,[Name],Category,Stock,Size,Colour,TechnicalSpecifications,
+	CostPrice,SellingPrice,DiscountPercentage from TeamA.Products where ProductID = @prodid
+end
+
+
+/* Procedure to get products by Name
+
+Developer name: Madhuri Vemulapaty
+Use case : Product
+Creation date : 30/09/2019
+Last modified : 01/10/2019
+
+ */
+create procedure TeamA.GetProductByName(@prodname varchar(50)) as
+begin
+    	--Returns products from the Products table with the given product name
+		select ProductID,[Name],Category,Stock,Size,Colour,TechnicalSpecifications,
+	CostPrice,SellingPrice,DiscountPercentage from TeamA.Products where [Name] = @prodname 
+end
+
+/* Procedure to get products by Category 
+
+Developer name: Madhuri Vemulapaty
+Use case : Product
+Creation date : 30/09/2019
+Last modified : 01/10/2019
+
+ */
+create procedure TeamA.GetProductsByCategory(@category varchar(30)) as
+begin
+    	-- Returns products which belong to the given category
+		select ProductID,[Name],Category,Stock,Size,Colour,TechnicalSpecifications,
+	CostPrice,SellingPrice,DiscountPercentage from TeamA.Products where Category = @category
+end
+
+
+/* Procedure to update product details
+
+Developer name: Madhuri Vemulapaty
+Use case : Product
+Creation date : 30/09/2019
+Last modified : 01/10/2019
+
+ */
+create procedure TeamA.UpdateProductDetails(@prodid uniqueidentifier, @techspecs varchar(1000),@costprice decimal(15,2),
+@sellingprice decimal(15,2)) as
+begin
+	-- updates products with the given details based on the productid
+	update TeamA.Products 
+	set TechnicalSpecifications = @techspecs , CostPrice = @costprice, SellingPrice = @sellingprice
+	where 
+	exists (select ProductID from TeamA.Products where ProductID=@prodid)
+end
+
+
+/*Procedure to delete product
+
+Developer name: Madhuri Vemulapaty
+Use case : Product
+Creation date : 30/09/2019
+Last modified : 01/10/2019
+
+ */
+create procedure TeamA.DeleteProduct(@prodid uniqueidentifier) as
+begin
+	-- Deletes product based on given productid
+	delete from TeamA.Products where
+	exists (select ProductID from TeamA.Products where ProductID=@prodid)
+end
+
+
+/*Procedure to update product stock
+
+Developer name: Madhuri Vemulapaty
+Use case : Product
+Creation date : 30/09/2019
+Last modified : 01/10/2019
+
+ */
+create procedure TeamA.UpdateProductStock(@prodid uniqueidentifier,@stock int) as
+begin
+	-- updates stock of product based on productid
+	update TeamA.Products set Stock = @stock where
+	exists (select ProductID from TeamA.Products where ProductID=@prodid)
+
+end
+
+/*Procedure to update product discount 
+
+Developer name: Madhuri Vemulapaty
+Use case : Product
+Creation date : 30/09/2019
+Last modified : 01/10/2019
+
+ */
+create procedure TeamA.UpdateProductDiscount(@prodid uniqueidentifier,@discount decimal(15,2)) as
+begin
+	-- updates stock of product based on productid
+	update TeamA.Products set DiscountPercentage = @discount where
+	exists (select ProductID from TeamA.Products where ProductID=@prodid)
+
+end
+
