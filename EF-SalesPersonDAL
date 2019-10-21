@@ -1,37 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Capgemini.GreatOutdoors.Contracts.DALContracts;
-using Capgemini.GreatOutdoors.Entities;
-using Capgemini.GreatOutdoors.Exceptions;
-using Capgemini.GreatOutdoors.Helpers;
 
-namespace Capgemini.GreatOutdoors.DataAccessLayer
+
+namespace GreatOutdoors.DataAccessLayer
 {
-    /// <summary>
-    /// Contains data access layer methods for inserting, updating, deleting SalesPersons from SalesPersons collection.
-    /// </summary>
-    public class SalesPersonDAL : SalesPersonDALBase, IDisposable
+    public class SalesPersonDAL
     {
-
         TeamAEntities entities = new TeamAEntities();
         /// <summary>
         /// Adds new SalesPerson to SalesPersons collection.
         /// </summary>
         /// <param name="newSalesPerson">Contains the SalesPerson details to be added.</param>
         /// <returns>Determinates whether the new SalesPerson is added.</returns>
-        public override bool AddSalesPersonDAL(SalesPerson newSalesPerson)
+        public  bool AddSalesPersonDAL(SalesPerson newSalesPerson)
         {
             bool SalesPersonAdded = false;
             try
             {
-                newSalesPerson.SalesPersonID = Guid.NewGuid();
-                newSalesPerson.LastModifiedDateTime = DateTime.Now;
-                entities.AddSalesPerson(newSalesPerson.SalesPersonID, newSalesPerson.SalesPersonName, newSalesPerson.AddressLine1,
-                    newSalesPerson.AddressLine2, newSalesPerson.BirthDate, newSalesPerson.City, newSalesPerson.Email,
-                    newSalesPerson.JoiningDate, newSalesPerson.LastModifiedDateTime, newSalesPerson.Password, newSalesPerson.Pincode,
-                    newSalesPerson.SalesPersonBonus, newSalesPerson.SalesPersonMobile, newSalesPerson.SalesPersonSalary, newSalesPerson.SalesPersonTarget);
+                newSalesPerson.SalespersonID = Guid.NewGuid();
+                newSalesPerson.LastAccountModifiedDateTime = DateTime.Now;
+                entities.AddSalesPerson(newSalesPerson.SalespersonID, newSalesPerson.Name, newSalesPerson.Mobile,
+                    newSalesPerson.Email, newSalesPerson.Password, newSalesPerson.Salary, newSalesPerson.Bonus, newSalesPerson.Target,
+                    newSalesPerson.JoiningDate, newSalesPerson.AddressLine1, newSalesPerson.AddressLine2, newSalesPerson.City,
+                    newSalesPerson.State, newSalesPerson.Pincode, newSalesPerson.Birthdate, newSalesPerson.LastAccountModifiedDateTime);
                 SalesPersonAdded = true;
             }
             catch (Exception)
@@ -45,18 +37,9 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// Gets all SalesPersons from the collection.
         /// </summary>
         /// <returns>Returns list of all SalesPersons.</returns>
-        public override List<SalesPerson> GetAllSalesPersonsDAL()
+        public  List<SalesPerson> GetAllSalesPersonsDAL()
         {
-            List<SalesPerson> salesPeople = new List<SalesPerson>();
-            try
-            {
-                salesPeople = entities.GetAllSalesPersons().ToList();
-            }
-            catch (GreatOutdoorsException ex)
-            {
-                throw new GreatOutdoorsException(ex.Message);
-            }
-
+            List<SalesPerson> salesPeople = entities.SalesPersons.ToList();
             return salesPeople;
         }
 
@@ -65,19 +48,19 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// </summary>
         /// <param name="searchSalesPersonID">Represents SalesPersonID to search.</param>
         /// <returns>Returns SalesPerson object.</returns>
-        public override SalesPerson GetSalesPersonBySalesPersonIDDAL(Guid searchSalesPersonID)
+        public  SalesPerson GetSalesPersonBySalesPersonIDDAL(Guid searchSalesPersonID)
         {
-            List<SalesPerson> salesPeople = new List<SalesPerson>();
+            SalesPerson matchingSalesPerson = new SalesPerson();
             try
             {
-                salesPeople = entities.GetSalesPersonBySalesPersonID(searchSalesPersonID).ToList();
+                //Find SalesPerson based on searchSalesPersonID
+                matchingSalesPerson = entities.GetSalesPersonBySalesPersonID(searchSalesPersonID).ToList()[0];
             }
-            catch (GreatOutdoorsException ex)
+            catch (Exception)
             {
-                throw new GreatOutdoorsException(ex.Message);
+                throw;
             }
-
-            return salesPeople[0];
+            return matchingSalesPerson;
         }
 
         /// <summary>
@@ -85,19 +68,19 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// </summary>
         /// <param name="SalesPersonName">Represents SalesPersonName to search.</param>
         /// <returns>Returns SalesPerson object.</returns>
-        public override List<SalesPerson> GetSalesPersonsByNameDAL(string SalesPersonName)
+        public  List<SalesPerson> GetSalesPersonsByNameDAL(string SalesPersonName)
         {
-            List<SalesPerson> salesPeople = new List<SalesPerson>();
+            List<SalesPerson> matchingSalesPersons = new List<SalesPerson>();
             try
             {
-                salesPeople = entities.GetSalesPersonsByName(SalesPersonName).ToList();
+                //Find All SalesPersons based on SalesPersonName
+                matchingSalesPersons = entities.GetSalesPersonByName(SalesPersonName).ToList();
             }
-            catch (GreatOutdoorsException ex)
+            catch (Exception)
             {
-                throw new GreatOutdoorsException(ex.Message);
+                throw;
             }
-
-            return salesPeople;
+            return matchingSalesPersons;
         }
 
         /// <summary>
@@ -105,19 +88,19 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// </summary>
         /// <param name="email">Represents SalesPerson's Email Address.</param>
         /// <returns>Returns SalesPerson object.</returns>
-        public override SalesPerson GetSalesPersonByEmailDAL(string email)
+        public  SalesPerson GetSalesPersonByEmailDAL(string email)
         {
-            List<SalesPerson> salesPeople = new List<SalesPerson>();
+            SalesPerson matchingSalesPerson = null;
             try
             {
-                salesPeople = entities.GetSalesPersonByEmail(email).ToList();
+                //Find SalesPerson based on Email and Password
+                matchingSalesPerson = entities.GetSalesPersonByEmail(email).ToList()[0];
             }
-            catch (GreatOutdoorsException ex)
+            catch (Exception)
             {
-                throw new GreatOutdoorsException(ex.Message);
+                throw;
             }
-
-            return salesPeople[0];
+            return matchingSalesPerson;
         }
 
         /// <summary>
@@ -126,19 +109,19 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// <param name="email">Represents SalesPerson's Email Address.</param>
         /// <param name="password">Represents SalesPerson's Password.</param>
         /// <returns>Returns SalesPerson object.</returns>
-        public override SalesPerson GetSalesPersonByEmailAndPasswordDAL(string email, string password)
+        public  SalesPerson GetSalesPersonByEmailAndPasswordDAL(string email, string password)
         {
-            List<SalesPerson> salesPeople = new List<SalesPerson>();
+            SalesPerson matchingSalesPerson = null;
             try
             {
-                salesPeople = entities.GetSalesPersonByEmailAndPassword(email,password).ToList();
+                //Find SalesPerson based on Email and Password
+                matchingSalesPerson = entities.GetSalesPersonByEmailAndPassword(email,password).ToList()[0];
             }
-            catch (GreatOutdoorsException ex)
+            catch (Exception)
             {
-                throw new GreatOutdoorsException(ex.Message);
+                throw;
             }
-
-            return salesPeople[0];
+            return matchingSalesPerson;
         }
 
         /// <summary>
@@ -146,31 +129,29 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// </summary>
         /// <param name="updateSalesPerson">Represents SalesPerson details including SalesPersonID, SalesPersonName etc.</param>
         /// <returns>Determinates whether the existing SalesPerson is updated.</returns>
-        public override bool UpdateSalesPersonDAL(SalesPerson updateSalesPerson)
+        public  bool UpdateSalesPersonDAL(SalesPerson updateSalesPerson)
         {
-            bool SalesPersonUpdated = false;
+            bool salesPersonUpdated = false;
             try
             {
                 //Find SalesPerson based on SalesPersonID
-                SalesPerson matchingSalesPerson = GetSalesPersonBySalesPersonIDDAL(updateSalesPerson.SalesPersonID);
+                SalesPerson matchingSalesPerson = GetSalesPersonBySalesPersonIDDAL(updateSalesPerson.SalespersonID);
 
                 if (matchingSalesPerson != null)
                 {
-                    //Update SalesPerson details
-                    updateSalesPerson.LastModifiedDateTime = DateTime.Now;
-                    entities.AddSalesPerson(updateSalesPerson.SalesPersonID, updateSalesPerson.SalesPersonName, updateSalesPerson.AddressLine1,
-                    updateSalesPerson.AddressLine2, updateSalesPerson.BirthDate, updateSalesPerson.City, updateSalesPerson.Email,
-                    updateSalesPerson.JoiningDate, updateSalesPerson.LastModifiedDateTime, updateSalesPerson.Password, updateSalesPerson.Pincode,
-                    updateSalesPerson.SalesPersonBonus, updateSalesPerson.SalesPersonMobile, updateSalesPerson.SalesPersonSalary, updateSalesPerson.SalesPersonTarget);
+                    
+                    matchingSalesPerson.LastAccountModifiedDateTime = DateTime.Now;
+                    entities.UpdateSalesPerson(updateSalesPerson.SalespersonID, updateSalesPerson.Name, updateSalesPerson.Mobile,
+                        updateSalesPerson.Email);
 
-                    SalesPersonUpdated = true;
+                    salesPersonUpdated = true;
                 }
             }
             catch (Exception)
             {
                 throw;
             }
-            return SalesPersonUpdated;
+            return salesPersonUpdated;
         }
 
         /// <summary>
@@ -178,17 +159,18 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// </summary>
         /// <param name="deleteSalesPersonID">Represents SalesPersonID to delete.</param>
         /// <returns>Determinates whether the existing SalesPerson is updated.</returns>
-        public override bool DeleteSalesPersonDAL(Guid deleteSalesPersonID)
+        public  bool DeleteSalesPersonDAL(Guid deleteSalesPersonID)
         {
             bool SalesPersonDeleted = false;
             try
             {
-              
-                if (deleteSalesPersonID != null)
+                //Find SalesPerson based on searchSalesPersonID
+                SalesPerson matchingSalesPerson = GetSalesPersonBySalesPersonIDDAL(deleteSalesPersonID);
+
+                if (matchingSalesPerson != null)
                 {
                     //Delete SalesPerson from the collection
-                    entities.Delete(deleteSalesPersonID);
-                    entities.SaveChanges();
+                    entities.DeleteSalesPerson(deleteSalesPersonID);
                     SalesPersonDeleted = true;
                 }
             }
@@ -204,22 +186,19 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// </summary>
         /// <param name="updateSalesPerson">Represents SalesPerson details including SalesPersonID, Password.</param>
         /// <returns>Determinates whether the existing SalesPerson's password is updated.</returns>
-        public override bool UpdateSalesPersonPasswordDAL(SalesPerson updateSalesPerson)
+        public  bool UpdateSalesPersonPasswordDAL(SalesPerson updateSalesPerson)
         {
             bool passwordUpdated = false;
             try
             {
                 //Find SalesPerson based on SalesPersonID
-                SalesPerson matchingSalesPerson = GetSalesPersonBySalesPersonIDDAL(updateSalesPerson.SalesPersonID);
+                SalesPerson matchingSalesPerson = GetSalesPersonBySalesPersonIDDAL(updateSalesPerson.SalespersonID);
 
                 if (matchingSalesPerson != null)
                 {
                     //Update SalesPerson details
-                    updateSalesPerson.LastModifiedDateTime = DateTime.Now;
-                    entities.AddSalesPerson(updateSalesPerson.SalesPersonID, updateSalesPerson.SalesPersonName, updateSalesPerson.AddressLine1,
-                    updateSalesPerson.AddressLine2, updateSalesPerson.BirthDate, updateSalesPerson.City, updateSalesPerson.Email,
-                    updateSalesPerson.JoiningDate, updateSalesPerson.LastModifiedDateTime, updateSalesPerson.Password, updateSalesPerson.Pincode,
-                    updateSalesPerson.SalesPersonBonus, updateSalesPerson.SalesPersonMobile, updateSalesPerson.SalesPersonSalary, updateSalesPerson.SalesPersonTarget);
+                    matchingSalesPerson.LastAccountModifiedDateTime = DateTime.Now;
+                    entities.UpdateSalesPersonPassword(updateSalesPerson.SalespersonID, updateSalesPerson.Password);
 
                     passwordUpdated = true;
                 }
@@ -230,8 +209,6 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
             }
             return passwordUpdated;
         }
+
     }
 }
-
-
-
