@@ -1,19 +1,13 @@
 using System;
-using System.Text;
 using System.Collections.Generic;
-using Capgemini.GreatOutdoors.Contracts.DALContracts;
-using Capgemini.GreatOutdoors.Entities;
-using Capgemini.GreatOutdoors.Exceptions;
-using Capgemini.GreatOutdoors.Helpers;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Capgemini.GreatOutdoors.DataAccessLayer
+namespace GreatOutdoors.DataAccessLayer
 {
-    /// <summary>
-    /// Contains data access layer methods for inserting, updating, deleting products from Products collection.
-    /// </summary>
-    public class ProductDAL : ProductDALBase, IDisposable
+    public class ProductDAL
     {
-
         TeamAEntities entities = new TeamAEntities();
 
         /// <summary>
@@ -21,18 +15,18 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// </summary>
         /// <param name="newProduct">Contains the product details to be added.</param>
         /// <returns>Determinates whether the new product is added.</returns>
-        public override bool AddProductDAL(Product newProduct)
+        public  bool AddProductDAL(Product newProduct)
         {
             bool productAdded = false;
             try
             {
                 newProduct.ProductID = Guid.NewGuid();
-                entities.AddProduct(newProduct.ProductID, newProduct.ProductName, newProduct.CategoryName.ToString(),
-                    newProduct.CostPrice,newProduct.ProductColour,newProduct.ProductDiscount,newProduct.ProductSize,
-                    newProduct.ProductStock,newProduct.ProductTechSpecs,newProduct.SellingPrice);
+                entities.AddProduct(newProduct.ProductID, newProduct.Name, newProduct.Category, newProduct.Stock,
+                   newProduct.Size, newProduct.Colour, newProduct.TechnicalSpecifications, newProduct.CostPrice,
+                   newProduct.SellingPrice,newProduct.DiscountPercentage);
                 productAdded = true;
             }
-            catch (GreatOutdoorsException ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -43,14 +37,14 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// Gets all products from the collection.
         /// </summary>
         /// <returns>Returns list of all products.</returns>
-        public override List<Product> GetAllProductsDAL()
+        public  List<Product> GetAllProductsDAL()
         {
             List<Product> products = new List<Product>();
             try
             {
-                products = entities.GetAllProducts.ToList();
+                products = entities.Products.ToList();
             }
-            catch(GreatOutdoorsException ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -63,14 +57,14 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// </summary>
         /// <param name="searchProductID">Represents ProductID to search.</param>
         /// <returns>Returns Product object.</returns>
-        public override List<Product> GetProductByProductIDDAL(Guid searchProductID)
+        public  List<Product> GetProductByProductIDDAL(Guid searchProductID)
         {
             List<Product> products = new List<Product>();
             try
             {
                 products = entities.GetProductByProductID(searchProductID).ToList();
             }
-            catch (GreatOutdoorsException ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -83,14 +77,14 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// </summary>
         /// <param name="productName">Represents ProductName to search.</param>
         /// <returns>Returns Product object.</returns>
-        public override List<Product> GetProductsByNameDAL(string productName)
+        public  List<Product> GetProductByNameDAL(string productName)
         {
             List<Product> products = new List<Product>();
             try
             {
-                products = entities.GetProductByProductID(productName).ToList();
+                products = entities.GetProductByName(productName).ToList();
             }
-            catch (GreatOutdoorsException ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -103,14 +97,14 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// </summary>
         /// <param name="CategoryName">Represents Product's Category Name.</param>
         /// <returns>Returns Product object.</returns>
-        public override List<Product> GetProductsByCategoryDAL(Category categoryName)
+        public  List<Product> GetProductsByCategoryDAL(string categoryName)
         {
             List<Product> products = new List<Product>();
             try
             {
-                products = entities.GetProductByProductID(categoryName.ToString()).ToList();
+                products = entities.GetProductsByCategory(categoryName).ToList();
             }
-            catch (GreatOutdoorsException ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -125,7 +119,7 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// </summary>
         /// <param name="updateProduct">Represents Product details including ProductID, ProductName etc.</param>
         /// <returns>Determinates whether the existing product is updated.</returns>
-        public override bool UpdateProductDAL(Product updateProduct)
+        public  bool UpdateProductDetailsDAL(Product updateProduct)
         {
             bool productUpdated = false;
             try
@@ -136,13 +130,12 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
                 if (matchingProduct != null)
                 {
                     //Update product details
-                    entities.UpdateProduct(updateProduct.ProductID, updateProduct.ProductName, updateProduct.CategoryName.ToString(),
-                    updateProduct.CostPrice, updateProduct.ProductColour, updateProduct.ProductDiscount, updateProduct.ProductSize,
-                    updateProduct.ProductStock, updateProduct.ProductTechSpecs, updateProduct.SellingPrice);
+                    entities.UpdateProductDetails(updateProduct.ProductID, updateProduct.TechnicalSpecifications,
+                        updateProduct.CostPrice,updateProduct.SellingPrice);
                     productUpdated = true;
                 }
             }
-            catch (GreatOutdoorsException)
+            catch (Exception)
             {
                 throw;
             }
@@ -155,7 +148,7 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
         /// <param name="updateProduct">Represents Product details including ProductID, ProductName etc.</param>
         /// <returns>Determinates whether the existing product is updated.</returns>
 
-        public override bool UpdateProductStockDAL(Product updateProduct)
+        public  bool UpdateProductStockDAL(Product updateProduct)
         {
             bool stockUpdated = false;
             try
@@ -166,32 +159,58 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
                 if (matchingProduct != null)
                 {
                     //Update product details
-                    entities.UpdateProduct(updateProduct.ProductID, updateProduct.ProductName, updateProduct.CategoryName.ToString(),
-                    updateProduct.CostPrice, updateProduct.ProductColour, updateProduct.ProductDiscount, updateProduct.ProductSize,
-                    updateProduct.ProductStock, updateProduct.ProductTechSpecs, updateProduct.SellingPrice);
+                    entities.UpdateProductStock(updateProduct.ProductID, updateProduct.Stock);
 
                     stockUpdated = true;
                 }
             }
-            catch (GreatOutdoorsException)
+            catch (Exception)
             {
                 throw;
             }
             return stockUpdated;
         }
 
+        /// <summary>
+        /// Update product discount.
+        /// </summary>
+        /// <param name="updateProduct">Represents Product details including ProductID, ProductName etc.</param>
+        /// <returns>Determinates whether the existing product is updated.</returns>
+
+        public bool UpdateProductDiscountDAL(Product updateProduct)
+        {
+            bool stockUpdated = false;
+            try
+            {
+                //Find Product based on ProductID
+                Product matchingProduct = GetProductByProductIDDAL(updateProduct.ProductID)[0];
+
+                if (matchingProduct != null)
+                {
+                    //Update product details
+                    entities.UpdateProductDiscount(updateProduct.ProductID, updateProduct.DiscountPercentage);
+
+                    stockUpdated = true;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return stockUpdated;
+        }
 
         /// <summary>
         /// Deletes product based on ProductID.
         /// </summary>
         /// <param name="deleteProductID">Represents ProductID to delete.</param>
         /// <returns>Determinates whether the existing product is deleted.</returns>
-        public override bool DeleteProductDAL(Guid deleteProductID)
+        public  bool DeleteProductDAL(Guid deleteProductID)
         {
             bool productDeleted = false;
             try
             {
-                
+
 
                 if (deleteProductID != null)
                 {
@@ -201,7 +220,7 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
                     productDeleted = true;
                 }
             }
-            catch (GreatOutdoorsException)
+            catch (Exception)
             {
                 throw;
             }
@@ -211,6 +230,3 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
 
     }
 }
-
-
-
