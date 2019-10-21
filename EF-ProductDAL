@@ -1,0 +1,216 @@
+using System;
+using System.Text;
+using System.Collections.Generic;
+using Capgemini.GreatOutdoors.Contracts.DALContracts;
+using Capgemini.GreatOutdoors.Entities;
+using Capgemini.GreatOutdoors.Exceptions;
+using Capgemini.GreatOutdoors.Helpers;
+
+namespace Capgemini.GreatOutdoors.DataAccessLayer
+{
+    /// <summary>
+    /// Contains data access layer methods for inserting, updating, deleting products from Products collection.
+    /// </summary>
+    public class ProductDAL : ProductDALBase, IDisposable
+    {
+
+        TeamAEntities entities = new TeamAEntities();
+
+        /// <summary>
+        /// Adds new product to Products collection.
+        /// </summary>
+        /// <param name="newProduct">Contains the product details to be added.</param>
+        /// <returns>Determinates whether the new product is added.</returns>
+        public override bool AddProductDAL(Product newProduct)
+        {
+            bool productAdded = false;
+            try
+            {
+                newProduct.ProductID = Guid.NewGuid();
+                entities.AddProduct(newProduct.ProductID, newProduct.ProductName, newProduct.CategoryName.ToString(),
+                    newProduct.CostPrice,newProduct.ProductColour,newProduct.ProductDiscount,newProduct.ProductSize,
+                    newProduct.ProductStock,newProduct.ProductTechSpecs,newProduct.SellingPrice);
+                productAdded = true;
+            }
+            catch (GreatOutdoorsException ex)
+            {
+                throw ex;
+            }
+            return productAdded;
+        }
+
+        /// <summary>
+        /// Gets all products from the collection.
+        /// </summary>
+        /// <returns>Returns list of all products.</returns>
+        public override List<Product> GetAllProductsDAL()
+        {
+            List<Product> products = new List<Product>();
+            try
+            {
+                products = entities.GetAllProducts.ToList();
+            }
+            catch(GreatOutdoorsException ex)
+            {
+                throw ex;
+            }
+
+            return products;
+        }
+
+        /// <summary>
+        /// Gets product based on ProductID.
+        /// </summary>
+        /// <param name="searchProductID">Represents ProductID to search.</param>
+        /// <returns>Returns Product object.</returns>
+        public override List<Product> GetProductByProductIDDAL(Guid searchProductID)
+        {
+            List<Product> products = new List<Product>();
+            try
+            {
+                products = entities.GetProductByProductID(searchProductID).ToList();
+            }
+            catch (GreatOutdoorsException ex)
+            {
+                throw ex;
+            }
+
+            return products;
+        }
+
+        /// <summary>
+        /// Gets product based on ProductName.
+        /// </summary>
+        /// <param name="productName">Represents ProductName to search.</param>
+        /// <returns>Returns Product object.</returns>
+        public override List<Product> GetProductsByNameDAL(string productName)
+        {
+            List<Product> products = new List<Product>();
+            try
+            {
+                products = entities.GetProductByProductID(productName).ToList();
+            }
+            catch (GreatOutdoorsException ex)
+            {
+                throw ex;
+            }
+
+            return products;
+        }
+
+        /// <summary>
+        /// Gets product based on email.
+        /// </summary>
+        /// <param name="CategoryName">Represents Product's Category Name.</param>
+        /// <returns>Returns Product object.</returns>
+        public override List<Product> GetProductsByCategoryDAL(Category categoryName)
+        {
+            List<Product> products = new List<Product>();
+            try
+            {
+                products = entities.GetProductByProductID(categoryName.ToString()).ToList();
+            }
+            catch (GreatOutdoorsException ex)
+            {
+                throw ex;
+            }
+
+            return products;
+        }
+
+
+
+        /// <summary>
+        /// Updates product based on ProductID.
+        /// </summary>
+        /// <param name="updateProduct">Represents Product details including ProductID, ProductName etc.</param>
+        /// <returns>Determinates whether the existing product is updated.</returns>
+        public override bool UpdateProductDAL(Product updateProduct)
+        {
+            bool productUpdated = false;
+            try
+            {
+                //Find Product based on ProductID
+                Product matchingProduct = GetProductByProductIDDAL(updateProduct.ProductID)[0];
+
+                if (matchingProduct != null)
+                {
+                    //Update product details
+                    entities.UpdateProduct(updateProduct.ProductID, updateProduct.ProductName, updateProduct.CategoryName.ToString(),
+                    updateProduct.CostPrice, updateProduct.ProductColour, updateProduct.ProductDiscount, updateProduct.ProductSize,
+                    updateProduct.ProductStock, updateProduct.ProductTechSpecs, updateProduct.SellingPrice);
+                    productUpdated = true;
+                }
+            }
+            catch (GreatOutdoorsException)
+            {
+                throw;
+            }
+            return productUpdated;
+        }
+
+        /// <summary>
+        /// Update product stock.
+        /// </summary>
+        /// <param name="updateProduct">Represents Product details including ProductID, ProductName etc.</param>
+        /// <returns>Determinates whether the existing product is updated.</returns>
+
+        public override bool UpdateProductStockDAL(Product updateProduct)
+        {
+            bool stockUpdated = false;
+            try
+            {
+                //Find Product based on ProductID
+                Product matchingProduct = GetProductByProductIDDAL(updateProduct.ProductID)[0];
+
+                if (matchingProduct != null)
+                {
+                    //Update product details
+                    entities.UpdateProduct(updateProduct.ProductID, updateProduct.ProductName, updateProduct.CategoryName.ToString(),
+                    updateProduct.CostPrice, updateProduct.ProductColour, updateProduct.ProductDiscount, updateProduct.ProductSize,
+                    updateProduct.ProductStock, updateProduct.ProductTechSpecs, updateProduct.SellingPrice);
+
+                    stockUpdated = true;
+                }
+            }
+            catch (GreatOutdoorsException)
+            {
+                throw;
+            }
+            return stockUpdated;
+        }
+
+
+        /// <summary>
+        /// Deletes product based on ProductID.
+        /// </summary>
+        /// <param name="deleteProductID">Represents ProductID to delete.</param>
+        /// <returns>Determinates whether the existing product is deleted.</returns>
+        public override bool DeleteProductDAL(Guid deleteProductID)
+        {
+            bool productDeleted = false;
+            try
+            {
+                
+
+                if (deleteProductID != null)
+                {
+                    //Delete Product from the collection
+                    entities.DeleteProduct(deleteProductID);
+                    entities.SaveChanges();
+                    productDeleted = true;
+                }
+            }
+            catch (GreatOutdoorsException)
+            {
+                throw;
+            }
+            return productDeleted;
+        }
+
+
+    }
+}
+
+
+
