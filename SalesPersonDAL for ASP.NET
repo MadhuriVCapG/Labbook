@@ -1,0 +1,676 @@
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Text;
+using Capgemini.GreatOutdoors.Contracts.DALContracts;
+using Capgemini.GreatOutdoors.Entities;
+using Capgemini.GreatOutdoors.Helpers;
+
+namespace Capgemini.GreatOutdoors.DataAccessLayer
+{
+    /// <summary>
+    /// Contains data access layer methods for inserting, updating, deleting SalesPersons from SalesPersons table.
+    /// </summary>
+    /// 
+    public class SalesPersonDAL : SalesPersonDALBase, IDisposable
+    {
+
+
+        /// <summary>
+        /// Adds new SalesPerson to SalesPersons table.
+        /// </summary>
+        /// <param name="newSalesPerson">Contains the SalesPerson details to be added.</param>
+        /// <returns>Determines whether the new SalesPerson is added.</returns>
+        public override bool AddSalesPersonDAL(SalesPerson newSalesPerson)
+        {
+            bool SalesPersonAdded = false;
+            try
+            {
+                newSalesPerson.SalesPersonID = Guid.NewGuid();               
+                newSalesPerson.LastModifiedDateTime = DateTime.Now;
+
+                //Create factory
+                DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["GOConnectionString"].ProviderName);
+
+                //Create connection
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["GOConnectionString"].ConnectionString;
+
+                //Create command
+                DbCommand command = connection.CreateCommand();
+                command.CommandText = "TeamA.AddSalesPerson";
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+
+                //Creating parameters
+                DbParameter p1 = command.CreateParameter();
+                p1.ParameterName = "@@salespersonid";
+                p1.Value = newSalesPerson.SalesPersonID;
+                p1.DbType = System.Data.DbType.Guid;
+                command.Parameters.Add(p1);
+
+                DbParameter p2 = command.CreateParameter();
+                p2.ParameterName = "@salespersonname";
+                p2.Value = newSalesPerson.SalesPersonName;
+                command.Parameters.Add(p2);
+
+                DbParameter p3 = command.CreateParameter();
+                p3.ParameterName = "@mobile";
+                p3.Value = newSalesPerson.SalesPersonMobile;
+                command.Parameters.Add(p3);
+
+                DbParameter p4 = command.CreateParameter();
+                p4.ParameterName = "@email";
+                p4.Value = newSalesPerson.Email;
+                command.Parameters.Add(p4);
+
+                DbParameter p5 = command.CreateParameter();
+                p5.ParameterName = "@password";
+                p5.Value = newSalesPerson.Password;
+                command.Parameters.Add(p5);
+
+                DbParameter p6 = command.CreateParameter();
+                p6.ParameterName = "@salary";
+                p6.Value = newSalesPerson.SalesPersonSalary;
+                command.Parameters.Add(p6);
+
+                DbParameter p7 = command.CreateParameter();
+                p7.ParameterName = "@bonus";
+                p7.Value = newSalesPerson.SalesPersonBonus;
+                command.Parameters.Add(p7);
+
+                DbParameter p8 = command.CreateParameter();
+                p8.ParameterName = "@target";
+                p8.Value = newSalesPerson.SalesPersonTarget;
+                command.Parameters.Add(p8);
+
+                DbParameter p9 = command.CreateParameter();
+                p9.ParameterName = "@joiningdate";
+                p9.Value = newSalesPerson.JoiningDate;
+                command.Parameters.Add(p9);
+
+
+                DbParameter p10 = command.CreateParameter();
+                p10.ParameterName = "@addressl1";
+                p10.Value = newSalesPerson.AddressLine1;
+                command.Parameters.Add(p10);
+
+                DbParameter p11 = command.CreateParameter();
+                p11.ParameterName = "@addressl2";
+                p11.Value = newSalesPerson.AddressLine2;
+                command.Parameters.Add(p11);
+
+                DbParameter p12 = command.CreateParameter();
+                p12.ParameterName = "@city";
+                p12.Value = newSalesPerson.City;
+                command.Parameters.Add(p12);
+
+
+                DbParameter p13 = command.CreateParameter();
+                p13.ParameterName = "@state";
+                p13.Value = newSalesPerson.State;
+                command.Parameters.Add(p13);
+
+
+                DbParameter p14 = command.CreateParameter();
+                p14.ParameterName = "@pincode";
+                p14.Value = newSalesPerson.Pincode;
+                command.Parameters.Add(p14);
+
+                DbParameter p15 = command.CreateParameter();
+                p14.ParameterName = "@birthdate";
+                p14.Value = newSalesPerson.BirthDate;
+                command.Parameters.Add(p15);
+
+                //Execute
+                connection.Open();
+                int n = command.ExecuteNonQuery();
+                connection.Close();
+                if (n >= 1)
+                    SalesPersonAdded = true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return SalesPersonAdded;
+        }
+
+        /// <summary>
+        /// Gets all SalesPersons from the table.
+        /// </summary>
+        /// <returns>Returns list of all SalesPersons.</returns>
+        public override List<SalesPerson> GetAllSalesPersonsDAL()
+        {
+            List<SalesPerson> salespeople = new List<SalesPerson>();
+
+            try
+            {
+
+                //Create factory
+                DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                //Create connection
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                //Create command
+                DbCommand command = connection.CreateCommand();
+                command.CommandText = "TeamA.GetAllSalesPersons";
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //Create adapter
+                DbDataAdapter adapter = factory.CreateDataAdapter();
+                adapter.SelectCommand = command;
+
+                //Create dataset
+                DataSet ds = new DataSet();
+
+                //Execute
+                adapter.Fill(ds);
+
+                //Convert datatable to collection
+                    salespeople = ds.Tables[0]
+                    .AsEnumerable()
+                    .Select(p => new SalesPerson()
+                    {
+                        SalesPersonID = p.Field<Guid>("SalespersonID"),
+                        SalesPersonName = p.Field<string>("Name"),
+                        SalesPersonMobile = p.Field<string>("Mobile"),
+                        Email = p.Field<string>("Email"),
+                        Password = p.Field<string>("Password"),
+                        AddressLine1 = p.Field<string>("AddressLine1"),
+                        AddressLine2 = p.Field<string>("AddressLine2"),
+                        City = p.Field<string>("City"),
+                        State p.Field<string>("State"),
+                        Pincode = p.Field<string>("Pincode"),
+                        SalesPersonSalary = p.Field<decimal>("Salary"),
+                        SalesPersonBonus = p.Field<decimal>("Bonus"),
+                        SalesPersonTarget = p.Field<decimal>("Target"),
+                        BirthDate = p.Field<datetime>("Birthdate"),
+                        JoiningDate = p.Field<datetime>("JoiningDate"),
+                        LastModifiedDateTime = p.Field<datetime>("LastAccountModifiedDateTime"),
+                    })
+                    .ToList();
+
+            }
+
+            catch (GreatOutdoorsException ex)
+            {
+                throw ex;
+            }
+
+            return products;
+        }
+
+        /// <summary>
+        /// Gets SalesPerson based on SalesPersonID.
+        /// </summary>
+        /// <param name="searchSalesPersonID">Represents SalesPersonID to search.</param>
+        /// <returns>Returns SalesPerson object.</returns>
+        public override SalesPerson GetSalesPersonBySalesPersonIDDAL(Guid searchSalesPersonID)
+        {
+            SalesPerson matchingSalesPerson = null;
+            try
+            {
+                //Create factory
+                DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                //Create connection
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                //Create command
+                DbCommand command = connection.CreateCommand();
+                command.CommandText = "TeamA.GetSalesPersonBySalesPersonID";
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //Create parameters
+                DbParameter p1 = command.CreateParameter();
+                p1.ParameterName = "@salespersonid";
+                p1.Value = searchSalesPersonID;
+                p1.DbType = System.Data.DbType.Guid;
+                command.Parameters.Add(p1);
+
+                //Create adapter
+                DbDataAdapter adapter = factory.CreateDataAdapter();
+                adapter.SelectCommand = command;
+
+                //Create dataset
+                DataSet ds = new DataSet();
+
+                //Execute
+                adapter.Fill(ds);
+
+                //Convert datatable to collection
+                     matchingSalesPerson = ds.Tables[0]
+                    .AsEnumerable()
+                     .Select(p => new SalesPerson()
+                     {
+                         SalesPersonID = p.Field<Guid>("SalespersonID"),
+                         SalesPersonName = p.Field<string>("Name"),
+                         SalesPersonMobile = p.Field<string>("Mobile"),
+                         Email = p.Field<string>("Email"),
+                         Password = p.Field<string>("Password"),
+                         AddressLine1 = p.Field<string>("AddressLine1"),
+                         AddressLine2 = p.Field<string>("AddressLine2"),
+                         City = p.Field<string>("City"),
+                         State p.Field<string>("State"),
+                         Pincode = p.Field<string>("Pincode"),
+                         SalesPersonSalary = p.Field<decimal>("Salary"),
+                         SalesPersonBonus = p.Field<decimal>("Bonus"),
+                         SalesPersonTarget = p.Field<decimal>("Target"),
+                         BirthDate = p.Field<datetime>("Birthdate"),
+                         JoiningDate = p.Field<datetime>("JoiningDate"),
+                         LastModifiedDateTime = p.Field<datetime>("LastAccountModifiedDateTime"),
+                     })
+                    .FirstOrDefault();
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return matchingSalesPerson;
+        }
+
+        /// <summary>
+        /// Gets SalesPerson based on SalesPersonName.
+        /// </summary>
+        /// <param name="SalesPersonName">Represents SalesPersonName to search.</param>
+        /// <returns>Returns SalesPerson object.</returns>
+        public override SalesPerson GetSalesPersonByNameDAL(string SalesPersonName)
+        {
+            List<SalesPerson> matchingSalesPerson = new SalesPerson();
+            try
+            {
+                //Create factory
+                DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                //Create connection
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                //Create command
+                DbCommand command = connection.CreateCommand();
+                command.CommandText = "TeamA.GetSalesPersonByName"; // Verify
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //Create parameters
+                DbParameter p1 = command.CreateParameter();
+                p1.ParameterName = "@salespersonname";
+                p1.Value = SalesPersonName;
+                command.Parameters.Add(p1);
+
+                //Create adapter
+                DbDataAdapter adapter = factory.CreateDataAdapter();
+                adapter.SelectCommand = command;
+
+                //Create dataset
+                DataSet ds = new DataSet();
+
+                //Execute
+                adapter.Fill(ds);
+
+                //Convert datatable to collection
+                matchingSalesPerson = ds.Tables[0]
+               .AsEnumerable()
+                .Select(p => new SalesPerson()
+                {
+                    SalesPersonID = p.Field<Guid>("SalespersonID"),
+                    SalesPersonName = p.Field<string>("Name"),
+                    SalesPersonMobile = p.Field<string>("Mobile"),
+                    Email = p.Field<string>("Email"),
+                    Password = p.Field<string>("Password"),
+                    AddressLine1 = p.Field<string>("AddressLine1"),
+                    AddressLine2 = p.Field<string>("AddressLine2"),
+                    City = p.Field<string>("City"),
+                    State p.Field<string>("State"),
+                    Pincode = p.Field<string>("Pincode"),
+                    SalesPersonSalary = p.Field<decimal>("Salary"),
+                    SalesPersonBonus = p.Field<decimal>("Bonus"),
+                    SalesPersonTarget = p.Field<decimal>("Target"),
+                    BirthDate = p.Field<datetime>("Birthdate"),
+                    JoiningDate = p.Field<datetime>("JoiningDate"),
+                    LastModifiedDateTime = p.Field<datetime>("LastAccountModifiedDateTime"),
+                })
+               .FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return matchingSalesPerson;
+        }
+
+        /// <summary>
+        /// Gets SalesPerson based on email.
+        /// </summary>
+        /// <param name="email">Represents SalesPerson's Email Address.</param>
+        /// <returns>Returns SalesPerson object.</returns>
+        public override SalesPerson GetSalesPersonByEmailDAL(string email)
+        {
+            SalesPerson matchingSalesPerson = new SalesPerson();
+            try
+            {
+                //Create factory
+                DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                //Create connection
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                //Create command
+                DbCommand command = connection.CreateCommand();
+                command.CommandText = "TeamA.GetSalesPersonByEmail"; // Verify
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //Create parameters
+                DbParameter p1 = command.CreateParameter();
+                p1.ParameterName = "@email";
+                p1.Value = email;
+                command.Parameters.Add(p1);
+
+                //Create adapter
+                DbDataAdapter adapter = factory.CreateDataAdapter();
+                adapter.SelectCommand = command;
+
+                //Create dataset
+                DataSet ds = new DataSet();
+
+                //Execute
+                adapter.Fill(ds);
+
+                //Convert datatable to collection
+                matchingSalesPerson = ds.Tables[0]
+               .AsEnumerable()
+                .Select(p => new SalesPerson()
+                {
+                    SalesPersonID = p.Field<Guid>("SalespersonID"),
+                    SalesPersonName = p.Field<string>("Name"),
+                    SalesPersonMobile = p.Field<string>("Mobile"),
+                    Email = p.Field<string>("Email"),
+                    Password = p.Field<string>("Password"),
+                    AddressLine1 = p.Field<string>("AddressLine1"),
+                    AddressLine2 = p.Field<string>("AddressLine2"),
+                    City = p.Field<string>("City"),
+                    State p.Field<string>("State"),
+                    Pincode = p.Field<string>("Pincode"),
+                    SalesPersonSalary = p.Field<decimal>("Salary"),
+                    SalesPersonBonus = p.Field<decimal>("Bonus"),
+                    SalesPersonTarget = p.Field<decimal>("Target"),
+                    BirthDate = p.Field<datetime>("Birthdate"),
+                    JoiningDate = p.Field<datetime>("JoiningDate"),
+                    LastModifiedDateTime = p.Field<datetime>("LastAccountModifiedDateTime"),
+                })
+               .FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return matchingSalesPerson;
+        }
+
+        /// <summary>
+        /// Gets SalesPerson based on Email and Password.
+        /// </summary>
+        /// <param name="email">Represents SalesPerson's Email Address.</param>
+        /// <param name="password">Represents SalesPerson's Password.</param>
+        /// <returns>Returns SalesPerson object.</returns>
+        public override SalesPerson GetSalesPersonByEmailAndPasswordDAL(string email, string password)
+        {
+            SalesPerson matchingSalesPerson = new SalesPerson();
+            try
+            {
+                //Create factory
+                DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                //Create connection
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                //Create command
+                DbCommand command = connection.CreateCommand();
+                command.CommandText = "TeamA.GetSalesPersonByEmailAndPassword"; // Verify
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //Create parameters
+                DbParameter p1 = command.CreateParameter();
+                p1.ParameterName = "@email";
+                p1.Value = email;
+                command.Parameters.Add(p1);
+
+                DbParameter p2 = command.CreateParameter();
+                p2.ParameterName = "@password";
+                p2.Value = password;
+                command.Parameters.Add(p2);
+
+                //Create adapter
+                DbDataAdapter adapter = factory.CreateDataAdapter();
+                adapter.SelectCommand = command;
+
+                //Create dataset
+                DataSet ds = new DataSet();
+
+                //Execute
+                adapter.Fill(ds);
+
+                //Convert datatable to collection
+                matchingSalesPerson = ds.Tables[0]
+               .AsEnumerable()
+                .Select(p => new SalesPerson()
+                {
+                    SalesPersonID = p.Field<Guid>("SalespersonID"),
+                    SalesPersonName = p.Field<string>("Name"),
+                    SalesPersonMobile = p.Field<string>("Mobile"),
+                    Email = p.Field<string>("Email"),
+                    Password = p.Field<string>("Password"),
+                    AddressLine1 = p.Field<string>("AddressLine1"),
+                    AddressLine2 = p.Field<string>("AddressLine2"),
+                    City = p.Field<string>("City"),
+                    State p.Field<string>("State"),
+                    Pincode = p.Field<string>("Pincode"),
+                    SalesPersonSalary = p.Field<decimal>("Salary"),
+                    SalesPersonBonus = p.Field<decimal>("Bonus"),
+                    SalesPersonTarget = p.Field<decimal>("Target"),
+                    BirthDate = p.Field<datetime>("Birthdate"),
+                    JoiningDate = p.Field<datetime>("JoiningDate"),
+                    LastModifiedDateTime = p.Field<datetime>("LastAccountModifiedDateTime"),
+                })
+               .FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return matchingSalesPerson;
+        }
+
+        /// <summary>
+        /// Updates SalesPerson based on SalesPersonID.
+        /// </summary>
+        /// <param name="updateSalesPerson">Represents SalesPerson details including SalesPersonID, SalesPersonName etc.</param>
+        /// <returns>Determines whether the existing SalesPerson is updated.</returns>
+        public override bool UpdateSalesPersonDAL(SalesPerson updateSalesPerson)
+        {
+            bool SalesPersonUpdated = false;
+            try
+            {
+                //Find SalesPerson based on SalesPersonID
+                SalesPerson matchingSalesPerson = GetSalesPersonBySalesPersonIDDAL(updateSalesPerson.SalesPersonID);
+
+                if (matchingSalesPerson != null)
+                {
+
+                    //Create factory
+                    DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                    //Create connection
+                    DbConnection connection = factory.CreateConnection();
+                    connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                    //Create command
+                    DbCommand command = connection.CreateCommand();
+                    command.CommandText = "TeamA.UpdateSalesPerson";
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    //Create parameters
+                    DbParameter p1 = command.CreateParameter();
+                    p1.ParameterName = "@salespersonid";
+                    p1.Value = updateSalesPerson.SalesPersonID;
+                    p1.DbType = System.Data.DbType.Guid;
+                    command.Parameters.Add(p1);
+
+                    DbParameter p2 = command.CreateParameter();
+                    p2.ParameterName = "@name";
+                    p2.Value = updateSalesPerson.SalesPersonName;
+                    command.Parameters.Add(p2);
+
+                    DbParameter p3 = command.CreateParameter();
+                    p3.ParameterName = "@mobile";
+                    p3.Value = updateSalesPerson.SalesPersonMobile;
+                    command.Parameters.Add(p3);
+
+                    DbParameter p4 = command.CreateParameter();
+                    p4.ParameterName = "@email";
+                    p4.Value = updateSalesPerson.Email;
+                    command.Parameters.Add(p4);
+
+                    //Execute
+                    connection.Open();
+                    int n = command.ExecuteNonQuery();
+                    connection.Close();
+
+                    if (n >= 1)
+                        SalesPersonUpdated = true;
+                }
+                }
+            catch (GreatOutdoorsException ex)
+            {
+                throw ex;
+            }
+            return SalesPersonUpdated;
+        }
+
+        /// <summary>
+        /// Deletes SalesPerson based on SalesPersonID.
+        /// </summary>
+        /// <param name="deleteSalesPersonID">Represents SalesPersonID to delete.</param>
+        /// <returns>Determines whether the existing SalesPerson is updated.</returns>
+        public override bool DeleteSalesPersonDAL(Guid deleteSalesPersonID)
+        {
+            bool SalesPersonDeleted = false;
+            try
+            {
+                //Create factory
+                DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                //Create connection
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                //Create command
+                DbCommand command = connection.CreateCommand();
+                command.CommandText = "TeamA.DeleteSalesPerson";
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //Create parameters
+                DbParameter p1 = command.CreateParameter();
+                p1.ParameterName = "@salespersonid";
+                p1.Value = deleteSalesPersonID;
+                p1.DbType = System.Data.DbType.Guid;
+                command.Parameters.Add(p1);
+
+                //Execute
+                connection.Open();
+                int n = command.ExecuteNonQuery();
+                connection.Close();
+                if (n >= 1)
+                    SalesPersonDeleted = true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return SalesPersonDeleted;
+        }
+
+        /// <summary>
+        /// Updates SalesPerson's password based on SalesPersonID.
+        /// </summary>
+        /// <param name="updateSalesPerson">Represents SalesPerson details including SalesPersonID, Password.</param>
+        /// <returns>Determines whether the existing SalesPerson's password is updated.</returns>
+        public override bool UpdateSalesPersonPasswordDAL(SalesPerson updateSalesPerson)
+        {
+            bool passwordUpdated = false;
+            try
+            {
+                //Find SalesPerson based on SalesPersonID
+                SalesPerson matchingSalesPerson = GetSalesPersonBySalesPersonIDDAL(updateSalesPerson.SalesPersonID);
+
+                if (matchingSalesPerson != null)
+                {
+                    //Update product details
+
+                    //Create factory
+                    DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                    //Create connection
+                    DbConnection connection = factory.CreateConnection();
+                    connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                    //Create command
+                    DbCommand command = connection.CreateCommand();
+                    command.CommandText = "TeamA.UpdateSalesPersonPassword";
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    //Create parameters
+                    DbParameter p1 = command.CreateParameter();
+                    p1.ParameterName = "@salespersonid";
+                    p1.Value = updateSalesPerson.SalesPersonID;
+                    p1.DbType = System.Data.DbType.Guid;
+                    command.Parameters.Add(p1);
+
+                    DbParameter p2 = command.CreateParameter();
+                    p2.ParameterName = "@password";
+                    p2.Value = updateSalesPerson.Password;
+                    command.Parameters.Add(p2);
+                    //Execute
+                    connection.Open();
+                    int n = command.ExecuteNonQuery();
+                    connection.Close();
+                    if (n >= 1)
+                        passwordUpdated = true;
+
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return passwordUpdated;
+        }
+
+
+        /// <summary>
+        /// Clears unmanaged resources such as db connections or file streams.
+        /// </summary>
+        public void Dispose()
+        {
+            //No unmanaged resources currently
+        }
+    }
+}
+
+
+
