@@ -146,7 +146,7 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
             adapter.Fill(ds);
 
             //Convert datatable to collection
-            List<Product> products = ds.Tables[0]
+                   products = ds.Tables[0]
                 .AsEnumerable()
                 .Select(p => new Product()
                 {
@@ -217,7 +217,7 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
                 adapter.Fill(ds);
 
                 //Convert datatable to collection
-                Product matchingProduct = ds.Tables[0]
+                matchingProduct = ds.Tables[0]
                     .AsEnumerable()
                     .Select(p => new Product()
                     {
@@ -239,7 +239,7 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
             {
                 throw;
             }
-            return matchingProduct[0];
+            return matchingProduct;
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
                 adapter.Fill(ds);
 
                 //Convert datatable to collection
-                Product matchingProduct = ds.Tables[0]
+                   matchingProduct = ds.Tables[0]
                     .AsEnumerable()
                     .Select(p => new Product()
                     {
@@ -304,7 +304,7 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
             {
                 throw;
             }
-            return matchingProduct[0];
+            return matchingProduct;
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
                 adapter.Fill(ds);
 
                 //Convert datatable to collection
-                Product matchingProducts = ds.Tables[0]
+                    matchingProducts = ds.Tables[0]
                     .AsEnumerable()
                     .Select(p => new Product()
                     {
@@ -364,7 +364,7 @@ namespace Capgemini.GreatOutdoors.DataAccessLayer
                         SellingPrice = p.Field<decimal>("SellingPrice"),
                         DiscountPercentage = p.Field<decimal>("DiscountPercentage")
                     })
-                    .FirstOrDefault();
+                    .ToList();
 
             }
             catch (GreatOutdoorsException)
