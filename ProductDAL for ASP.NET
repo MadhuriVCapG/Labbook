@@ -1,0 +1,622 @@
+using System;
+using System.Collections.Generic;
+using Capgemini.GreatOutdoors.Contracts.DALContracts;
+using Capgemini.GreatOutdoors.Entities;
+using Capgemini.GreatOutdoors.Exceptions;
+using Capgemini.GreatOutdoors.Helpers;
+using System.Data.SqlClient;
+using System.Data;
+using System.Data.Common;
+namespace Capgemini.GreatOutdoors.DataAccessLayer
+{
+    /// <summary>
+    /// Contains data access layer methods for inserting, updating, deleting products from Products Table.
+    /// </summary>
+    public class ProductDAL : ProductDALBase, IDisposable
+    {
+
+        /// <summary>
+        /// Adds new product to Products table.
+        /// </summary>
+        /// <param name="newProduct">Contains the product details to be added.</param>
+        /// <returns>Determinates whether the new product is added.</returns>
+        public override bool AddProductDAL(Product newProduct)
+        {
+            bool productAdded = false;
+         
+            try
+            {
+                //Create factory
+                DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["GOConnectionString"].ProviderName);
+
+                //Create connection
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["GOConnectionString"].ConnectionString;
+
+                //Create command
+                DbCommand command = connection.CreateCommand();
+                command.CommandText = "TeamA.AddProduct";
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //Create new Guid
+                newProduct.ProductID = Guid.NewGuid();
+
+                //Creating parameters
+                DbParameter p1 = command.CreateParameter();
+                p1.ParameterName = "@prodid";
+                p1.Value = newProduct.ProductID;
+                p1.DbType = System.Data.DbType.Guid;
+                command.Parameters.Add(p1);
+
+                DbParameter p2 = command.CreateParameter();
+                p2.ParameterName = "@prodname";
+                p2.Value = newProduct.ProductName;
+                command.Parameters.Add(p2);
+
+                DbParameter p3 = command.CreateParameter();
+                p3.ParameterName = "@category";
+                p3.Value = newProduct.CategoryName.ToString();
+                command.Parameters.Add(p3);
+
+                DbParameter p4 = command.CreateParameter();
+                p4.ParameterName = "@stock";
+                p4.Value = newProduct.ProductStock;
+                command.Parameters.Add(p4);
+
+                DbParameter p5 = command.CreateParameter();
+                p5.ParameterName = "@size";
+                p5.Value = newProduct.ProductSize;
+                command.Parameters.Add(p5);
+
+                DbParameter p6 = command.CreateParameter();
+                p6.ParameterName = "@colour";
+                p6.Value = newProduct.ProductColour;
+                command.Parameters.Add(p6);
+
+                DbParameter p7 = command.CreateParameter();
+                p7.ParameterName = "@techspecs";
+                p7.Value = newProduct.ProductTechSpecs;
+                command.Parameters.Add(p7);
+
+                DbParameter p8 = command.CreateParameter();
+                p8.ParameterName = "@cprice";
+                p8.Value = newProduct.CostPrice;
+                command.Parameters.Add(p8);
+
+                DbParameter p9 = command.CreateParameter();
+                p9.ParameterName = "@sprice";
+                p9.Value = newProduct.SellingPrice;
+                command.Parameters.Add(p9);
+
+
+                DbParameter p10 = command.CreateParameter();
+                p10.ParameterName = "@discount";
+                p10.Value = newProduct.DiscountPercentage;
+                command.Parameters.Add(p10);
+
+
+                //Execute
+                connection.Open();
+                int n = command.ExecuteNonQuery();
+                connection.Close();
+                if (n >= 1)
+                    productAdded = true;
+
+            }
+            catch (GreatOutdoorsException ex)
+            {
+                throw ex;
+            }
+            return productAdded;
+        }
+
+        /// <summary>
+        /// Gets all products from the table.
+        /// </summary>
+        /// <returns>Returns list of all products.</returns>
+        public override List<Product> GetAllProductsDAL()
+        {
+            List<Product> products = new List<Product>();
+            
+            try
+            {
+
+            //Create factory
+            DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+            //Create connection
+            DbConnection connection = factory.CreateConnection();
+            connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+            //Create command
+            DbCommand command = connection.CreateCommand();
+            command.CommandText = "TeamA.GetAllProducts";
+            command.Connection = connection;
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            
+            //Create adapter
+            DbDataAdapter adapter = factory.CreateDataAdapter();
+            adapter.SelectCommand = command;
+
+            //Create dataset
+            DataSet ds = new DataSet();
+
+            //Execute
+            adapter.Fill(ds);
+
+            //Convert datatable to collection
+            List<Product> products = ds.Tables[0]
+                .AsEnumerable()
+                .Select(p => new Product()
+                {
+                    ProductID = p.Field<Guid>("ProductID"),
+                    ProductName = p.Field<string>("Name"),
+                    CategoryName = p.Field<string>("Category"),
+                    ProductStock = p.Field<int>("Stock"),
+                    ProductSize = p.Field<string>("Size"),
+                    ProductColour = p.Field<string>("Colour"),
+                    ProductTechSpecs = p.Field<string>("TechnicalSpecifications"),
+                    CostPrice = p.Field<decimal>("CostPrice"),
+                    SellingPrice = p.Field<decimal>("SellingPrice"),
+                    DiscountPercentage = p.Field<decimal>("DiscountPercentage")
+                })
+                .ToList();
+                
+            }
+
+            catch (GreatOutdoorsException ex)
+            {
+                throw ex;
+            }
+
+            return products;
+        }
+
+        /// <summary>
+        /// Gets product based on ProductID.
+        /// </summary>
+        /// <param name="searchProductID">Represents ProductID to search.</param>
+        /// <returns>Returns Product object.</returns>
+        public override Product GetProductByProductIDDAL(Guid searchProductID)
+        {
+            Product matchingProduct = new Product();
+            try
+            {
+                //Find Product based on searchProductID
+
+
+                //Create factory
+                DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                //Create connection
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                //Create command
+                DbCommand command = connection.CreateCommand();
+                command.CommandText = "TeamA.GetProductByProductID";
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //Create parameters
+                DbParameter p1 = command.CreateParameter();
+                p1.ParameterName = "@prodid";
+                p1.Value = searchProductID;
+                p1.DbType = System.Data.DbType.Guid;
+                command.Parameters.Add(p1);
+
+                //Create adapter
+                DbDataAdapter adapter = factory.CreateDataAdapter();
+                adapter.SelectCommand = command;
+
+                //Create dataset
+                DataSet ds = new DataSet();
+
+                //Execute
+                adapter.Fill(ds);
+
+                //Convert datatable to collection
+                Product matchingProduct = ds.Tables[0]
+                    .AsEnumerable()
+                    .Select(p => new Product()
+                    {
+                        ProductID = p.Field<Guid>("ProductID"),
+                        ProductName = p.Field<string>("Name"),
+                        CategoryName = p.Field<string>("Category"),
+                        ProductStock = p.Field<int>("Stock"),
+                        ProductSize = p.Field<string>("Size"),
+                        ProductColour = p.Field<string>("Colour"),
+                        ProductTechSpecs = p.Field<string>("TechnicalSpecifications"),
+                        CostPrice = p.Field<decimal>("CostPrice"),
+                        SellingPrice = p.Field<decimal>("SellingPrice"),
+                        DiscountPercentage = p.Field<decimal>("DiscountPercentage")
+                    })
+                    .FirstOrDefault();
+
+            }
+            catch (GreatOutdoorsException)
+            {
+                throw;
+            }
+            return matchingProduct[0];
+        }
+
+        /// <summary>
+        /// Gets product based on ProductName.
+        /// </summary>
+        /// <param name="productName">Represents ProductName to search.</param>
+        /// <returns>Returns Product object.</returns>
+        public override Product GetProductByNameDAL(string productName)
+        {
+            Product matchingProduct = new Product();
+            try
+            {
+                //Find Product based on productName
+                //Create factory
+                DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                //Create connection
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                //Create command
+                DbCommand command = connection.CreateCommand();
+                command.CommandText = "TeamA.GetProductByName";
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //Create parameters
+                DbParameter p1 = command.CreateParameter();
+                p1.ParameterName = "@prodname";
+                p1.Value = productName;
+                command.Parameters.Add(p1);
+
+                //Create adapter
+                DbDataAdapter adapter = factory.CreateDataAdapter();
+                adapter.SelectCommand = command;
+
+                //Create dataset
+                DataSet ds = new DataSet();
+
+                //Execute
+                adapter.Fill(ds);
+
+                //Convert datatable to collection
+                Product matchingProduct = ds.Tables[0]
+                    .AsEnumerable()
+                    .Select(p => new Product()
+                    {
+                        ProductID = p.Field<Guid>("ProductID"),
+                        ProductName = p.Field<string>("Name"),
+                        CategoryName = p.Field<string>("Category"),
+                        ProductStock = p.Field<int>("Stock"),
+                        ProductSize = p.Field<string>("Size"),
+                        ProductColour = p.Field<string>("Colour"),
+                        ProductTechSpecs = p.Field<string>("TechnicalSpecifications"),
+                        CostPrice = p.Field<decimal>("CostPrice"),
+                        SellingPrice = p.Field<decimal>("SellingPrice"),
+                        DiscountPercentage = p.Field<decimal>("DiscountPercentage")
+                    })
+                    .FirstOrDefault();
+            }
+            catch (GreatOutdoorsException)
+            {
+                throw;
+            }
+            return matchingProduct[0];
+        }
+
+        /// <summary>
+        /// Gets product based on category.
+        /// </summary>
+        /// <param name="CategoryName">Represents Product's Category Name.</param>
+        /// <returns>Returns Product object.</returns>
+        public override List<Product> GetProductsByCategoryDAL(Category categoryName)
+        {
+            List<Product> matchingProducts = new List<Product>();
+            try
+            {
+                //Find Product based on category
+
+                //Create factory
+                DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                //Create connection
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                //Create command
+                DbCommand command = connection.CreateCommand();
+                command.CommandText = "TeamA.GetProductsByCategory";
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //Create parameters
+                DbParameter p1 = command.CreateParameter();
+                p1.ParameterName = "@category";
+                p1.Value = Convert.ToString(categoryName);
+                command.Parameters.Add(p1);
+
+                //Create adapter
+                DbDataAdapter adapter = factory.CreateDataAdapter();
+                adapter.SelectCommand = command;
+
+                //Create dataset
+                DataSet ds = new DataSet();
+
+                //Execute
+                adapter.Fill(ds);
+
+                //Convert datatable to collection
+                Product matchingProducts = ds.Tables[0]
+                    .AsEnumerable()
+                    .Select(p => new Product()
+                    {
+                        ProductID = p.Field<Guid>("ProductID"),
+                        ProductName = p.Field<string>("Name"),
+                        CategoryName = p.Field<string>("Category"),
+                        ProductStock = p.Field<int>("Stock"),
+                        ProductSize = p.Field<string>("Size"),
+                        ProductColour = p.Field<string>("Colour"),
+                        ProductTechSpecs = p.Field<string>("TechnicalSpecifications"),
+                        CostPrice = p.Field<decimal>("CostPrice"),
+                        SellingPrice = p.Field<decimal>("SellingPrice"),
+                        DiscountPercentage = p.Field<decimal>("DiscountPercentage")
+                    })
+                    .FirstOrDefault();
+
+            }
+            catch (GreatOutdoorsException)
+            {
+                throw;
+            }
+            return matchingProducts;
+        }
+
+
+
+        /// <summary>
+        /// Updates product based on ProductID.
+        /// </summary>
+        /// <param name="updateProduct">Represents Product details including ProductID, ProductName etc.</param>
+        /// <returns>Determinates whether the existing product is updated.</returns>
+        public override bool UpdateProductDAL(Product updateProduct)
+        {
+            bool productUpdated = false;
+            try
+            {
+                //Find Product based on ProductID
+                Product matchingProduct = GetProductByProductIDDAL(updateProduct.ProductID);
+
+                if (matchingProduct != null)
+                {
+
+                    //Create factory
+                    DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                    //Create connection
+                    DbConnection connection = factory.CreateConnection();
+                    connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                    //Create command
+                    DbCommand command = connection.CreateCommand();
+                    command.CommandText = "TeamA.UpdateProductDetails";
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    //Create parameters
+                    DbParameter p1 = command.CreateParameter();
+                    p1.ParameterName = "@prodid";
+                    p1.Value = updateProduct.ProductID;
+                    p1.DbType = System.Data.DbType.Guid;
+                    command.Parameters.Add(p1);
+
+                    DbParameter p2 = command.CreateParameter();
+                    p2.ParameterName = "@techspecs";
+                    p2.Value = updateProduct.ProductTechSpecs;
+                    command.Parameters.Add(p2);
+
+                    DbParameter p3 = command.CreateParameter();
+                    p3.ParameterName = "@cprice";
+                    p3.Value = updateProduct.CostPrice;
+                    command.Parameters.Add(p3);
+
+                    DbParameter p4 = command.CreateParameter();
+                    p4.ParameterName = "@sprice";
+                    p4.Value = updateProduct.SellingPrice;
+                    command.Parameters.Add(p4);
+
+                    //Execute
+                    connection.Open();
+                    int n = command.ExecuteNonQuery();
+                    connection.Close();
+                    if (n >= 1)
+                            productUpdated = true;
+                }
+            }
+            catch (GreatOutdoorsException ex)
+            {
+                throw ex;
+            }
+            return productUpdated;
+        }
+
+        /// <summary>
+        /// Update product stock.
+        /// </summary>
+        /// <param name="updateProduct">Represents Product details including ProductID, ProductName etc.</param>
+        /// <returns>Determinates whether the existing product is updated.</returns>
+
+        public override bool UpdateProductStockDAL(Product updateProduct)
+        {
+            bool stockUpdated = false;
+            try
+            {
+                //Find Product based on ProductID
+                Product matchingProduct = GetProductByProductIDDAL(updateProduct.ProductID);
+
+                if (matchingProduct != null)
+                {
+                    //Update product details
+
+                    //Create factory
+                    DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                    //Create connection
+                    DbConnection connection = factory.CreateConnection();
+                    connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                    //Create command
+                    DbCommand command = connection.CreateCommand();
+                    command.CommandText = "TeamA.UpdateProductStock";
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    //Create parameters
+                    DbParameter p1 = command.CreateParameter();
+                    p1.ParameterName = "@prodid";
+                    p1.Value = updateProduct.ProductID;
+                    p1.DbType = System.Data.DbType.Guid;
+                    command.Parameters.Add(p1);
+
+                    DbParameter p2 = command.CreateParameter();
+                    p2.ParameterName = "@stock";
+                    p2.Value = updateProduct.ProductStock;
+                    command.Parameters.Add(p2);
+                    //Execute
+                    connection.Open();
+                    int n = command.ExecuteNonQuery();
+                    connection.Close();
+                    if (n >= 1)
+                        stockUpdated = true;
+                    
+                }
+            }
+            catch (GreatOutdoorsException)
+            {
+                throw;
+            }
+            return stockUpdated;
+        }
+
+        /// <summary>
+        /// Update product discount.
+        /// </summary>
+        /// <param name="updateProduct">Represents Product details including ProductID, ProductName etc.</param>
+        /// <returns>Determinates whether the existing product is updated.</returns>
+
+        public override bool UpdateProductDiscountDAL(Product updateProduct)
+        {
+            bool discountUpdated = false;
+            try
+            {
+                //Find Product based on ProductID
+                Product matchingProduct = GetProductByProductIDDAL(updateProduct.ProductID);
+
+                if (matchingProduct != null)
+                {
+                    //Update product details
+
+                    //Create factory
+                    DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                    //Create connection
+                    DbConnection connection = factory.CreateConnection();
+                    connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                    //Create command
+                    DbCommand command = connection.CreateCommand();
+                    command.CommandText = "TeamA.UpdateProductStock";
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    //Create parameters
+                    DbParameter p1 = command.CreateParameter();
+                    p1.ParameterName = "@prodid";
+                    p1.Value = updateProduct.ProductID;
+                    p1.DbType = System.Data.DbType.Guid;
+                    command.Parameters.Add(p1);
+
+                    DbParameter p2 = command.CreateParameter();
+                    p2.ParameterName = "@discount";
+                    p2.Value = updateProduct.DiscountPercentage;
+                    command.Parameters.Add(p2);
+                    //Execute
+                    connection.Open();
+                    int n = command.ExecuteNonQuery();
+                    connection.Close();
+                    if (n >= 1)
+                        discountUpdated = true;
+
+                }
+            }
+            catch (GreatOutdoorsException)
+            {
+                throw;
+            }
+            return discountUpdated;
+        }
+
+        /// <summary>
+        /// Deletes product based on ProductID.
+        /// </summary>
+        /// <param name="deleteProductID">Represents ProductID to delete.</param>
+        /// <returns>Determinates whether the existing product is updated.</returns>
+        public override bool DeleteProductDAL(Guid deleteProductID)
+        {
+            bool productDeleted = false;
+            try
+            {
+
+                //Delete Product from the table
+
+                //Create factory
+                DbProviderFactory factory = DbProviderFactories.GetFactory(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ProviderName);
+
+                //Create connection
+                DbConnection connection = factory.CreateConnection();
+                connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
+
+                //Create command
+                DbCommand command = connection.CreateCommand();
+                command.CommandText = "TeamA.DeleteProduct";
+                command.Connection = connection;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                //Create parameters
+                DbParameter p1 = command.CreateParameter();
+                p1.ParameterName = "@ProductID";
+                p1.Value = deleteProductID;
+                p1.DbType = System.Data.DbType.Guid;
+                command.Parameters.Add(p1);
+
+                //Execute
+                connection.Open();
+                int n = command.ExecuteNonQuery();
+                connection.Close();
+                if (n >= 1)
+                        productDeleted = true;
+
+            }
+            catch (GreatOutdoorsException)
+            {
+                throw;
+            }
+            return productDeleted;
+        }
+
+
+
+        /// <summary>
+        /// Clears unmanaged resources such as db connections or file streams.
+        /// </summary>
+        public void Dispose()
+        {
+           
+        }
+    }
+}
+
+
+
