@@ -51,10 +51,10 @@ namespace Capgemini.GreatOutdoors.Entities
         [Required("Product technical specifications can't be blank.")]
         public string ProductTechSpecs { get; set; }
 
-        public double CostPrice { get; set; }
-        public double SellingPrice { get; set; }
+        public decimal CostPrice { get; set; }
+        public decimal SellingPrice { get; set; }
 
-        public double DiscountPercentage { get; set; }
+        public decimal DiscountPercentage { get; set; }
         public int ProductStock { get; set; }
 
         /* Constructor */
