@@ -1,0 +1,78 @@
+using Capgemini.GreatOutdoors.Helpers.ValidationAttributes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Capgemini.GreatOutdoors.Entities
+{
+    public enum Category
+    {
+       Camping, Golf, Mountaineering, OutdoorProtection, PersonalAccessories
+    }
+    /// <summary>
+    /// Interface for Product Entity
+    /// </summary>
+
+    public interface IProduct
+    {
+        Guid ProductID { get; set; }
+        string ProductName { get; set; }
+        int ProductStock { get; set; }
+        string ProductSize { get; set; }
+        string ProductColour { get; set; }
+        string ProductTechSpecs { get; set; }
+        decimal CostPrice { get; set; }
+        decimal SellingPrice { get; set; }        
+        decimal DiscountPercentage { get; set; }
+    }
+
+    /// <summary>
+    /// Represents Product
+    /// </summary>
+    public class Product : IProduct
+    {
+        /* Auto-Implemented Properties */
+        [Required("Product ID can't be blank.")]
+        public Guid ProductID { get; set; }
+
+        [Required("Product Name can't be blank.")]
+        [RegExp(@"^(\w{2,40})$", "Product Name should contain only 2 to 40 characters.")]
+        public string ProductName { get; set; }
+
+        [Required("Category Name can't be blank.")]
+        public Category CategoryName { get; set; }
+
+        [Required("Product size can't be blank.")]
+        public string ProductSize { get; set; }
+
+        [Required("Product colour can't be blank.")]
+        public string ProductColour { get; set; }
+
+        [Required("Product technical specifications can't be blank.")]
+        public string ProductTechSpecs { get; set; }
+
+        public double CostPrice { get; set; }
+        public double SellingPrice { get; set; }
+
+        public double DiscountPercentage { get; set; }
+        public int ProductStock { get; set; }
+
+        /* Constructor */
+        public Product()
+        {
+            ProductID = default(Guid);
+            ProductName = null;
+            ProductStock = 0;
+            CategoryName = 0;
+            ProductSize = null;
+            ProductColour = null;
+            ProductTechSpecs = null;
+            CostPrice = 0;
+            SellingPrice = 0;
+            DiscountPercentage = 0;
+        }
+    }
+}
+
+
+
