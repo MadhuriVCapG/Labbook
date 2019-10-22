@@ -1,0 +1,92 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Capgemini.GreatOutdoors.Entities;
+using Capgemini.GreatOutdoors.Helpers.ValidationAttributes;
+
+namespace Capgemini.GreatOutdoors.Entities
+{
+    /// <summary>
+    /// Interface for Sales Person Entity
+    /// </summary>
+    public interface ISalesPerson
+    {
+      
+        Guid SalesPersonID { get; set; }
+        string SalesPersonName { get; set; }
+        string SalesPersonMobile { get; set; }
+        string Email { get; set; }
+        string Password { get; set; }
+        string AddressLine1{ get; set; }
+        string AddressLine2 { get; set; }
+        string City { get; set; }
+        string State { get; set; }
+        string Pincode { get; set; }       
+        decimal SalesPersonSalary { get; set; }
+        decimal SalesPersonBonus { get; set; }
+        decimal SalesPersonTarget { get; set; }
+        DateTime BirthDate { get; set; }
+        DateTime JoiningDate { get; set; }
+        DateTime LastModifiedDateTime { get; set; }
+    }
+
+    /// <summary>
+    /// Represents SalesPerson
+    /// </summary>
+    public class SalesPerson : ISalesPerson, IUser
+    {
+        /* Auto-Implemented Properties */
+        [Required("Sales Man ID can't be blank.")]
+        public Guid SalesPersonID { get; set; }
+
+        [Required("SalesPerson Name can't be blank.")]
+        [RegExp(@"^(\w{2,40})$", "Sales Man Name should contain only 2 to 40 characters.")]
+        public string SalesPersonName { get; set; }
+
+        [RegExp(@"^[6789]\d{9}$", "Mobile number should contain 10 digits")]
+        public string SalesPersonMobile { get; set; }
+
+        [Required("Email can't be blank.")]
+        [RegExp(@"\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", "Email is invalid.")]
+        public string Email { get; set; }
+
+        [Required("Password can't be blank.")]
+        [RegExp(@"((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,15})", "Password should be 6 to 15 characters with at least one digit, one uppercase letter, one lower case letter.")]
+        public string Password { get; set; }
+
+        public string AddressLine1 { get; set; }
+        public string AddressLine2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Pincode { get; set; }
+        public DateTime BirthDate { get; set; }
+        public DateTime JoiningDate { get; set; }
+        public DateTime LastModifiedDateTime { get; set; }
+        public decimal SalesPersonTarget { get; set; }
+        public decimal SalesPersonSalary { get; set; }
+        public decimal SalesPersonBonus { get; set; }
+
+        /* Constructor */
+        public SalesPerson()
+        {
+            SalesPersonID = default(Guid);
+            SalesPersonName = null;
+            SalesPersonMobile = null;
+            Email = null;
+            Password = null;
+            LastModifiedDateTime = default(DateTime);
+            SalesPersonSalary = 0;
+            SalesPersonBonus = 0;
+
+        }
+    }
+
+
+
+}
+
+
+
+
+
+
